@@ -2,8 +2,11 @@ package com.fomaxtro.notemark.presentation.screen.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.notemark.domain.repository.AuthRepository
+import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.ValidationResult
 import com.fomaxtro.notemark.domain.validator.LoginDataValidator
+import com.fomaxtro.notemark.presentation.screen.login.mapper.toUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +22,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginDataValidator: LoginDataValidator
+    private val loginDataValidator: LoginDataValidator,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginState())
     val state = _state
@@ -76,7 +80,26 @@ class LoginViewModel(
 
     private fun onLogInClick() {
         viewModelScope.launch {
-            eventChannel.send(LoginEvent.NavigateToHome)
+            _state.update { it.copy(
+                isLoading = true
+            ) }
+
+            val result = with(state.value) {
+                authRepository.login(email, password)
+            }
+
+            _state.update { it.copy(
+                isLoading = false
+            ) }
+
+            when (result) {
+                is Result.Error -> {
+                    eventChannel.send(LoginEvent.ShowMessage(result.error.toUiText()))
+                }
+                is Result.Success -> {
+                    eventChannel.send(LoginEvent.NavigateToHome)
+                }
+            }
         }
     }
 

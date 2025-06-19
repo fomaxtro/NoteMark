@@ -4,5 +4,5 @@ import com.fomaxtro.notemark.presentation.ui.UiText
 
 sealed interface RegistrationEvent {
     data object NavigateToLogin : RegistrationEvent
-    data class ShowError(val error: UiText) : RegistrationEvent
+    data class ShowMessage(val message: UiText) : RegistrationEvent
 }

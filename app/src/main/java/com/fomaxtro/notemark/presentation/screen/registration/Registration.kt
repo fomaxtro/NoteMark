@@ -56,9 +56,9 @@ fun RegistrationRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             RegistrationEvent.NavigateToLogin -> navigateToLogin()
-            is RegistrationEvent.ShowError -> {
+            is RegistrationEvent.ShowMessage -> {
                 snackbarHostState.showSnackbar(
-                    message = event.error.asString(context)
+                    message = event.message.asString(context)
                 )
             }
         }

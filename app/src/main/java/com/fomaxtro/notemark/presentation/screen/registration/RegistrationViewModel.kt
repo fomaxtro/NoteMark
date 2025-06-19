@@ -303,8 +303,8 @@ class RegistrationViewModel(
 
             when (result) {
                 is Result.Error -> {
-                    eventChannel.send(RegistrationEvent.ShowError(
-                        error = result.error.toUiText()
+                    eventChannel.send(RegistrationEvent.ShowMessage(
+                        message = result.error.toUiText()
                     ))
                 }
                 is Result.Success -> {
