@@ -2,6 +2,7 @@ package com.fomaxtro.notemark
 
 import android.app.Application
 import com.fomaxtro.notemark.data.di.dataModule
+import com.fomaxtro.notemark.di.mainModule
 import com.fomaxtro.notemark.domain.di.domainModule
 import com.fomaxtro.notemark.presentation.di.presentationModule
 import org.koin.android.ext.koin.androidContext
@@ -23,7 +24,8 @@ class NoteMarkApplication : Application() {
             modules(
                 domainModule,
                 presentationModule,
-                dataModule
+                dataModule,
+                mainModule
             )
         }
     }

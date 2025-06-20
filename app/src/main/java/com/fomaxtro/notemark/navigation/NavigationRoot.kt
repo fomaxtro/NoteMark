@@ -14,12 +14,14 @@ import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
 import com.fomaxtro.notemark.presentation.screen.registration.RegistrationRoot
 
 @Composable
-fun NavigationRoot() {
+fun NavigationRoot(
+    isLoggedIn: Boolean
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Landing
+        startDestination = if (isLoggedIn) Home else Landing
     ) {
         composable<Landing> {
             LandingRoot(
