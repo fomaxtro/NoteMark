@@ -73,8 +73,8 @@ dependencies {
     implementation(libs.bundles.koin)
 
     implementation(libs.timber)
-
     implementation(libs.bundles.ktor)
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

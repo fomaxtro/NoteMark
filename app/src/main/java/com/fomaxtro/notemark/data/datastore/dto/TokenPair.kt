@@ -1,9 +1,9 @@
-package com.fomaxtro.notemark.data.remote.dto
+package com.fomaxtro.notemark.data.datastore.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TokenResponse(
+data class TokenPair(
     val accessToken: String,
     val refreshToken: String
 )
