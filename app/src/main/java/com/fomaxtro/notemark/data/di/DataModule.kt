@@ -28,7 +28,11 @@ import org.koin.dsl.module
 
 val dataModule = module {
     singleOf(::AndroidPatternMatching).bind<PatternMatching>()
-    single<HttpClient> { HttpClientFactory.create() }
+    single<HttpClient> {
+        HttpClientFactory.create(
+            secureSessionStorage = get()
+        )
+    }
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
     singleOf(::KtorAuthDataSource).bind<AuthDataSource>()
     single<DataStore<Preferences>> {
@@ -47,7 +51,7 @@ val dataModule = module {
             }
         )
     }
-    single {
+    single<DataStoreSecureSessionStorage> {
         DataStoreSecureSessionStorage(
             store = get(named("secure"))
         )

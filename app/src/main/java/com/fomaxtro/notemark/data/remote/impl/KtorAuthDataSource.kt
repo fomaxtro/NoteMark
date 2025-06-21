@@ -2,8 +2,8 @@ package com.fomaxtro.notemark.data.remote.impl
 
 import com.fomaxtro.notemark.data.remote.datasource.AuthDataSource
 import com.fomaxtro.notemark.data.remote.dto.LoginRequest
-import com.fomaxtro.notemark.data.remote.dto.RegisterRequest
 import com.fomaxtro.notemark.data.remote.dto.LoginResponse
+import com.fomaxtro.notemark.data.remote.dto.RegisterRequest
 import com.fomaxtro.notemark.data.remote.util.NetworkError
 import com.fomaxtro.notemark.data.remote.util.createRoute
 import com.fomaxtro.notemark.data.remote.util.safeCall
