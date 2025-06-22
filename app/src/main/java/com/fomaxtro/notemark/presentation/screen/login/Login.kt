@@ -35,7 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginRoot(
-    navigateToHome: () -> Unit,
+    navigateToNoteList: () -> Unit,
     navigateToRegistration: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
 ) {
@@ -47,7 +47,7 @@ fun LoginRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            LoginEvent.NavigateToHome -> navigateToHome()
+            LoginEvent.NavigateToNoteList -> navigateToNoteList()
             LoginEvent.NavigateToRegistration -> navigateToRegistration()
             is LoginEvent.ShowMessage -> {
                 snackbarHostState.showSnackbar(

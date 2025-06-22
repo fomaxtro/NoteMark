@@ -54,7 +54,7 @@ fun Avatar(
 private fun AvatarPreview() {
     NoteMarkTheme { 
         Avatar(
-            name = "Fomaxtro"
+            name = "Foo"
         )
     }
 }

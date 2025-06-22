@@ -97,7 +97,7 @@ class LoginViewModel(
                     eventChannel.send(LoginEvent.ShowMessage(result.error.toUiText()))
                 }
                 is Result.Success -> {
-                    eventChannel.send(LoginEvent.NavigateToHome)
+                    eventChannel.send(LoginEvent.NavigateToNoteList)
                 }
             }
         }

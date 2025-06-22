@@ -12,6 +12,11 @@ import com.fomaxtro.notemark.presentation.designsystem.buttons.NoteMarkFloatingA
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 
 @Composable
+fun NoteListRoot() {
+    NoteListScreen()
+}
+
+@Composable
 private fun NoteListScreen() {
     WindowInsets.statusBars
     Scaffold(
@@ -27,7 +32,7 @@ private fun NoteListScreen() {
             )
         }
     ) { innerPadding ->
-        
+
     }
 }
 

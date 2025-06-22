@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fomaxtro.notemark.presentation.screen.landing.LandingRoot
 import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
+import com.fomaxtro.notemark.presentation.screen.note_list.NoteListRoot
 import com.fomaxtro.notemark.presentation.screen.registration.RegistrationRoot
 
 @Composable
@@ -16,7 +17,7 @@ fun NavigationRoot(
 
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) Home else Landing
+        startDestination = if (isLoggedIn) NoteList else Landing
     ) {
         composable<Landing> {
             LandingRoot(
@@ -57,8 +58,8 @@ fun NavigationRoot(
 
         composable<Login> {
             LoginRoot(
-                navigateToHome = {
-                    navController.navigate(Home) {
+                navigateToNoteList = {
+                    navController.navigate(NoteList) {
                         launchSingleTop = true
 
                         popUpTo<Login> {
@@ -78,8 +79,8 @@ fun NavigationRoot(
             )
         }
 
-        composable<Home> {
-
+        composable<NoteList> {
+            NoteListRoot()
         }
     }
 }
