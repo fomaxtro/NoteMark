@@ -33,14 +33,14 @@ val Inter = FontFamily(
 val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = SpaceGrotesk,
-        fontSize = 36.sp,
-        lineHeight = 40.sp,
+        fontSize = 32.sp,
+        lineHeight = 36.sp,
         fontWeight = FontWeight.Bold
     ),
     titleMedium = TextStyle(
         fontFamily = SpaceGrotesk,
-        fontSize = 32.sp,
-        lineHeight = 36.sp,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
         fontWeight = FontWeight.Bold
     ),
     titleSmall = TextStyle(

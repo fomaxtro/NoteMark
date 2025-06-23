@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.fomaxtro.notemark.presentation.edit_note.EditNoteRoot
 import com.fomaxtro.notemark.presentation.screen.landing.LandingRoot
 import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
 import com.fomaxtro.notemark.presentation.screen.note_list.NoteListRoot
@@ -81,6 +82,10 @@ fun NavigationRoot(
 
         composable<NoteList> {
             NoteListRoot()
+        }
+
+        composable<EditNote> {
+            EditNoteRoot()
         }
     }
 }

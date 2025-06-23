@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,6 +20,7 @@ import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
 import com.fomaxtro.notemark.presentation.designsystem.buttons.NoteMarkFloatingActionButton
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
+import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
 import com.fomaxtro.notemark.presentation.screen.note_list.components.NoteCardItem
 import com.fomaxtro.notemark.presentation.screen.note_list.model.NoteUi
 import kotlin.uuid.ExperimentalUuidApi
@@ -39,8 +41,12 @@ private fun NoteListScreen(
     Scaffold(
         topBar = {
             NoteMarkTopAppBar(
-                title = stringResource(R.string.app_name),
-                name = "Foo"
+                title = {
+                    Text(text = stringResource(R.string.app_name))
+                },
+                action = {
+                    Avatar(name = "Foo")
+                }
             )
         },
         floatingActionButton = {
