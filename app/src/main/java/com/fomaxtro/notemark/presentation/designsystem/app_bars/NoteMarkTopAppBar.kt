@@ -2,7 +2,9 @@ package com.fomaxtro.notemark.presentation.designsystem.app_bars
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +28,16 @@ import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 
 @OptIn(ExperimentalMaterial3Api::class)
+object NoteMarkTopAppBarDefaults {
+    val padding = PaddingValues(
+        horizontal = 16.dp,
+        vertical = 8.dp
+    )
+    val windowInsets: WindowInsets
+        @Composable get() = TopAppBarDefaults.windowInsets
+    val height = TopAppBarDefaults.TopAppBarExpandedHeight
+}
+
 @Composable
 fun NoteMarkTopAppBar(
     title: @Composable () -> Unit,
@@ -41,12 +53,9 @@ fun NoteMarkTopAppBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 8.dp
-                )
-                .windowInsetsPadding(TopAppBarDefaults.windowInsets)
-                .height(TopAppBarDefaults.TopAppBarExpandedHeight),
+                .padding(NoteMarkTopAppBarDefaults.padding)
+                .windowInsetsPadding(NoteMarkTopAppBarDefaults.windowInsets)
+                .height(NoteMarkTopAppBarDefaults.height),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
