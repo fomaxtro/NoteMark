@@ -4,8 +4,8 @@ import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.SessionStorage
 import com.fomaxtro.notemark.data.datastore.dto.AuthInfo
 import com.fomaxtro.notemark.data.datastore.dto.TokenPair
-import com.fomaxtro.notemark.data.remote.mapper.toLoginError
-import com.fomaxtro.notemark.data.remote.mapper.toRegisterError
+import com.fomaxtro.notemark.data.mapper.toLoginError
+import com.fomaxtro.notemark.data.mapper.toRegisterError
 import com.fomaxtro.notemark.data.remote.datasource.AuthDataSource
 import com.fomaxtro.notemark.data.remote.dto.LoginRequest
 import com.fomaxtro.notemark.data.remote.dto.RegisterRequest

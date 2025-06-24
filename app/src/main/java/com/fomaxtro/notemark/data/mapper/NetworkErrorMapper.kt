@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.data.remote.mapper
+package com.fomaxtro.notemark.data.mapper
 
 import com.fomaxtro.notemark.data.remote.util.NetworkError
 import com.fomaxtro.notemark.domain.error.LoginError

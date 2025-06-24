@@ -17,7 +17,7 @@ class KtorAuthDataSource(
     private val httpClient: HttpClient
 ) : AuthDataSource {
     override suspend fun register(request: RegisterRequest): EmptyResult<NetworkError> {
-        return safeCall<Unit> {
+        return safeCall {
             httpClient.post(createRoute("/auth/register")) {
                 setBody(request)
             }
@@ -25,7 +25,7 @@ class KtorAuthDataSource(
     }
 
     override suspend fun login(request: LoginRequest): Result<LoginResponse, NetworkError> {
-        return safeCall<LoginResponse> {
+        return safeCall {
             httpClient.post(createRoute("/auth/login")) {
                 setBody(request)
             }

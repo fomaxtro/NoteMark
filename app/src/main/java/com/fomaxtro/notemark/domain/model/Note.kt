@@ -1,12 +1,10 @@
 package com.fomaxtro.notemark.domain.model
 
 import java.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+import java.util.UUID
 
-@OptIn(ExperimentalUuidApi::class)
 data class Note(
-    val id: Uuid,
+    val id: UUID,
     val title: String,
     val content: String,
     val createdAt: Instant,

@@ -23,8 +23,8 @@ import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
 import com.fomaxtro.notemark.presentation.screen.note_list.components.NoteCardItem
 import com.fomaxtro.notemark.presentation.screen.note_list.model.NoteUi
+import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @Composable
 fun NoteListRoot() {
@@ -75,9 +75,8 @@ private fun NoteListScreen(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
 internal val previewNoteUi = NoteUi(
-    id = Uuid.random(),
+    id = UUID.randomUUID(),
     title = "Title",
     content = "Content",
     createdAt = "23 Jan 2024"
