@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -105,6 +106,7 @@ fun AdaptiveTwoPaneSheet(
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
+                            .imePadding()
                             .weight(1f)
                             .verticalScroll(rememberScrollState())
                     ) {
