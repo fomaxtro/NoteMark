@@ -1,7 +1,6 @@
 package com.fomaxtro.notemark.data.repository
 
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
-import com.fomaxtro.notemark.data.datastore.SessionStorage
 import com.fomaxtro.notemark.data.datastore.dto.AuthInfo
 import com.fomaxtro.notemark.data.datastore.dto.TokenPair
 import com.fomaxtro.notemark.data.mapper.toLoginError
@@ -15,8 +14,7 @@ import com.fomaxtro.notemark.domain.util.asEmptyResult
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthDataSource,
-    private val secureSessionStorage: SecureSessionStorage,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SecureSessionStorage
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): EmptyResult<LoginError> {
         val result =  authDataSource
@@ -31,16 +29,13 @@ class AuthRepositoryImpl(
             is Result.Error -> Result.Error(result.error.toLoginError())
             is Result.Success -> {
                 with(result.data) {
-                    secureSessionStorage.saveTokenPair(
-                        TokenPair(
-                            accessToken = accessToken,
-                            refreshToken = refreshToken
-                        )
-                    )
-
                     sessionStorage.saveAuthInfo(
                         AuthInfo(
-                            username = username
+                            username = username,
+                            tokenPair = TokenPair(
+                                accessToken = accessToken,
+                                refreshToken = refreshToken
+                            )
                         )
                     )
                 }

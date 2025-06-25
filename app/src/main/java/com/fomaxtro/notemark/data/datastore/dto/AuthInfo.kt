@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthInfo(
-    val username: String
+    val username: String,
+    val tokenPair: TokenPair
 )

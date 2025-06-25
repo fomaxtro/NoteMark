@@ -6,7 +6,7 @@ import com.fomaxtro.notemark.data.datastore.dto.TokenPair
 import com.fomaxtro.notemark.data.remote.dto.RefreshTokenRequest
 import com.fomaxtro.notemark.data.remote.dto.RefreshTokenResponse
 import com.fomaxtro.notemark.data.remote.util.createRoute
-import com.fomaxtro.notemark.data.remote.util.safeCall
+import com.fomaxtro.notemark.data.remote.util.safeRemoteCall
 import com.fomaxtro.notemark.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -30,7 +30,7 @@ import timber.log.Timber
 
 object HttpClientFactory {
     fun create(
-        secureSessionStorage: SecureSessionStorage
+        sessionStorage: SecureSessionStorage
     ): HttpClient {
         return HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -65,7 +65,7 @@ object HttpClientFactory {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        val tokenPair = secureSessionStorage.getTokenPair()
+                        val tokenPair = sessionStorage.getTokenPair()
 
                         tokenPair?.let {
                             BearerTokens(
@@ -76,10 +76,10 @@ object HttpClientFactory {
                     }
 
                     refreshTokens {
-                        val tokenPair = secureSessionStorage.getTokenPair()
-                            ?: return@refreshTokens null
+                        val tokenPair = sessionStorage
+                            .getTokenPair() ?: return@refreshTokens null
 
-                        val response = safeCall<RefreshTokenResponse> {
+                        val response = safeRemoteCall<RefreshTokenResponse> {
                             client.post(createRoute("/auth/refresh")) {
                                 setBody(
                                     RefreshTokenRequest(
@@ -94,7 +94,7 @@ object HttpClientFactory {
                         when (response) {
                             is Result.Error -> null
                             is Result.Success -> {
-                                secureSessionStorage.saveTokenPair(
+                                sessionStorage.saveTokenPair(
                                     TokenPair(
                                         accessToken = response.data.accessToken,
                                         refreshToken = response.data.refreshToken
