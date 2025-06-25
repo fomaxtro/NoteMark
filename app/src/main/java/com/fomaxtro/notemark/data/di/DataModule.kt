@@ -18,13 +18,17 @@ import com.fomaxtro.notemark.data.datastore.store.SecurePreference
 import com.fomaxtro.notemark.data.remote.HttpClientFactory
 import com.fomaxtro.notemark.data.remote.datasource.AuthDataSource
 import com.fomaxtro.notemark.data.remote.datasource.NoteDataSource
+import com.fomaxtro.notemark.data.remote.datasource.UserDataSource
 import com.fomaxtro.notemark.data.remote.impl.KtorAuthDataSource
 import com.fomaxtro.notemark.data.remote.impl.KtorNoteDataSource
+import com.fomaxtro.notemark.data.remote.impl.KtorUserDataSource
 import com.fomaxtro.notemark.data.repository.AuthRepositoryImpl
 import com.fomaxtro.notemark.data.repository.NoteRepositoryImpl
+import com.fomaxtro.notemark.data.repository.UserRepositoryImpl
 import com.fomaxtro.notemark.data.validator.AndroidPatternMatching
 import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.repository.NoteRepository
+import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.validator.PatternMatching
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -50,9 +54,11 @@ val dataModule = module {
 
     singleOf(::KtorAuthDataSource).bind<AuthDataSource>()
     singleOf(::KtorNoteDataSource).bind<NoteDataSource>()
+    singleOf(::KtorUserDataSource).bind<UserDataSource>()
 
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
     singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
+    singleOf(::UserRepositoryImpl).bind<UserRepository>()
 
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create(

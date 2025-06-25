@@ -9,7 +9,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 import timber.log.Timber
 
-suspend inline fun <reified T> safeCall(
+suspend inline fun <reified T> safeRemoteCall(
     call: () -> HttpResponse
 ): Result<T, NetworkError> {
     return try {

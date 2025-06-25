@@ -3,7 +3,7 @@ package com.fomaxtro.notemark.presentation.screen.registration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.R
-import com.fomaxtro.notemark.domain.repository.AuthRepository
+import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.ValidationResult
 import com.fomaxtro.notemark.domain.validator.RegistrationDataValidator
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 class RegistrationViewModel(
     private val registrationDataValidator: RegistrationDataValidator,
-    private val authRepository: AuthRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegistrationState())
     val state = _state
@@ -288,7 +288,7 @@ class RegistrationViewModel(
             }
 
             val result = with(state.value) {
-                authRepository.register(
+                userRepository.register(
                     username = username,
                     email = email,
                     password = password
