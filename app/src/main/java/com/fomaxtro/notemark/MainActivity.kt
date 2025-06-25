@@ -23,10 +23,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val state by viewModel.state.collectAsStateWithLifecycle()
+            KoinAndroidContext {
+                val state by viewModel.state.collectAsStateWithLifecycle()
 
-            if (!state.isCheckingAuth) {
-                KoinAndroidContext {
+                if (!state.isCheckingAuth) {
                     NoteMarkTheme {
                         NavigationRoot(
                             isLoggedIn = state.isLoggedIn

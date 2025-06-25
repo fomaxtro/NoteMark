@@ -20,7 +20,7 @@ class DataStoreSecureSessionStorage(
         }
     }
 
-    override suspend fun getAuthInfo(): Flow<AuthInfo?> {
+    override fun getAuthInfo(): Flow<AuthInfo?> {
         return dataStore
             .data
             .map { it.authInfo }

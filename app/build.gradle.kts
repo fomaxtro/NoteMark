@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "com.fomaxtro.notemark"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.fomaxtro.notemark"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -35,11 +35,13 @@ android {
         defaultConfig {
             val properties = gradleLocalProperties(rootDir, providers)
 
-            val baseUrl = properties.getProperty("baseUrl")
+            val apiUrl = properties.getProperty("api.url")
+            val apiDebug = properties.getProperty("api.debug", "false")
             val userEmail = properties.getProperty("user.email")
 
-            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "API_URL", "\"$apiUrl\"")
             buildConfigField("String", "USER_EMAIL", "\"$userEmail\"")
+            buildConfigField("Boolean", "API_DEBUG", apiDebug)
         }
     }
     compileOptions {

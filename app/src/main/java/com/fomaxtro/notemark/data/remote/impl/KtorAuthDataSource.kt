@@ -8,7 +8,6 @@ import com.fomaxtro.notemark.data.remote.util.createRoute
 import com.fomaxtro.notemark.data.remote.util.safeRemoteCall
 import com.fomaxtro.notemark.domain.util.Result
 import io.ktor.client.HttpClient
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
@@ -19,7 +18,6 @@ class KtorAuthDataSource(
         return safeRemoteCall {
             httpClient.post(createRoute("/auth/login")) {
                 setBody(request)
-                header("Debug", true)
             }
         }
     }

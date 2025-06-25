@@ -31,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -55,7 +54,7 @@ val dataModule = module {
     singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
     singleOf(::UserRepositoryImpl).bind<UserRepository>()
 
-    single<DataStore<SecurePreference>>(named("secure")) {
+    single<DataStore<SecurePreference>> {
         DataStoreFactory.create(
             serializer = EncryptedPreferenceSerializer,
             produceFile = {

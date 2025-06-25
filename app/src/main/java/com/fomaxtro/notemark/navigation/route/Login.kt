@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.navigation
+package com.fomaxtro.notemark.navigation.route
 
 import kotlinx.serialization.Serializable
 

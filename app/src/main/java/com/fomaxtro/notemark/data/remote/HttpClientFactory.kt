@@ -60,6 +60,10 @@ object HttpClientFactory {
             defaultRequest {
                 contentType(ContentType.Application.Json)
                 header("X-User-Email", BuildConfig.USER_EMAIL)
+
+                if (BuildConfig.API_DEBUG) {
+                    header("Debug", true)
+                }
             }
 
             install(Auth) {
