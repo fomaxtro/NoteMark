@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.presentation.screen.components
+package com.fomaxtro.notemark.presentation.designsystem.sheets
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

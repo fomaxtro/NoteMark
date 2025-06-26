@@ -35,10 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.buttons.NoteMarkButton
+import com.fomaxtro.notemark.presentation.designsystem.sheets.AdaptiveTwoPaneSheet
 import com.fomaxtro.notemark.presentation.designsystem.text_fields.NoteMarkPasswordTextField
 import com.fomaxtro.notemark.presentation.designsystem.text_fields.NoteMarkTextField
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
-import com.fomaxtro.notemark.presentation.screen.components.AdaptiveTwoPaneSheet
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
