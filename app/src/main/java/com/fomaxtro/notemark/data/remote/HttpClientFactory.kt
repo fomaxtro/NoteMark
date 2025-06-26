@@ -60,10 +60,6 @@ object HttpClientFactory {
             defaultRequest {
                 contentType(ContentType.Application.Json)
                 header("X-User-Email", BuildConfig.USER_EMAIL)
-
-                if (BuildConfig.API_DEBUG) {
-                    header("Debug", true)
-                }
             }
 
             install(Auth) {
@@ -91,12 +87,20 @@ object HttpClientFactory {
                                     )
                                 )
 
+                                if (BuildConfig.API_DEBUG) {
+                                    header("Debug", true)
+                                }
+
                                 markAsRefreshTokenRequest()
                             }
                         }
 
                         when (response) {
-                            is Result.Error -> null
+                            is Result.Error -> {
+                                sessionStorage.removeAuthInfo()
+
+                                null
+                            }
                             is Result.Success -> {
                                 sessionStorage.saveTokenPair(
                                     TokenPair(
