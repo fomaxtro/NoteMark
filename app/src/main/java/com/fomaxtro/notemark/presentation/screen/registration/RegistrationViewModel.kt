@@ -7,7 +7,7 @@ import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.ValidationResult
 import com.fomaxtro.notemark.domain.validator.RegistrationDataValidator
-import com.fomaxtro.notemark.presentation.screen.registration.mapper.toUiText
+import com.fomaxtro.notemark.presentation.mapper.toUiText
 import com.fomaxtro.notemark.presentation.ui.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

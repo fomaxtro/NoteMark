@@ -32,4 +32,10 @@
     <string name="save_note">SAVE NOTE</string>
     <string name="user_log_out">User Log Out</string>
     <string name="note_title">Note Title</string>
+    <string name="note_content_placeholder">Tap to enter note content</string>
+    <string name="discard_changes">Discard changes?</string>
+    <string name="discard_changes_message">You have unsaved changes. If you discard now, all\nchanges will be lost.</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="disk_full">Storage full. Unable to save data</string>
 </resources>

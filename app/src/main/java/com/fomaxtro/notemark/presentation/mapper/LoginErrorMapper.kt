@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.presentation.screen.login.mapper
+package com.fomaxtro.notemark.presentation.mapper
 
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.domain.error.LoginError

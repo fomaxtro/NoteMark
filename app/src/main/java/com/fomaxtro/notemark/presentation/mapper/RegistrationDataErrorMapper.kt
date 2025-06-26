@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.presentation.screen.registration.mapper
+package com.fomaxtro.notemark.presentation.mapper
 
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.domain.validator.RegistrationDataError
