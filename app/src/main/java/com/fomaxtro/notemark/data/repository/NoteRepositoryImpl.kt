@@ -21,15 +21,25 @@ class NoteRepositoryImpl(
 ) : NoteRepository {
     override suspend fun createNote(note: Note): EmptyResult<DataError> {
         val result = safeDatabaseCall {
-            noteDao.insert(note.toNoteEntity())
+            noteDao.upsert(note.toNoteEntity())
         }
 
         applicationScope.launch {
             noteDataSource.createNote(note.toNoteDto())
         }
 
-        return result.mapError {
-            it.toDataError()
+        return result.mapError { it.toDataError() }
+    }
+
+    override suspend fun updateNote(note: Note): EmptyResult<DataError> {
+        val result = safeDatabaseCall {
+            noteDao.upsert(note.toNoteEntity())
         }
+
+        applicationScope.launch {
+            noteDataSource.updateNote(note.toNoteDto())
+        }
+
+        return result.mapError { it.toDataError() }
     }
 }

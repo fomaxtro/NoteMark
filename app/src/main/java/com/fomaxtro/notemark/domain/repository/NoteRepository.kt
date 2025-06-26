@@ -6,4 +6,5 @@ import com.fomaxtro.notemark.domain.util.EmptyResult
 
 interface NoteRepository {
     suspend fun createNote(note: Note): EmptyResult<DataError>
+    suspend fun updateNote(note: Note): EmptyResult<DataError>
 }

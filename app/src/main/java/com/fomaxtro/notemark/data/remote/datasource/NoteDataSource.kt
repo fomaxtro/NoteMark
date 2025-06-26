@@ -6,4 +6,5 @@ import com.fomaxtro.notemark.domain.util.Result
 
 interface NoteDataSource {
     suspend fun createNote(note: NoteDto): Result<NoteDto, NetworkError>
+    suspend fun updateNote(note: NoteDto): Result<NoteDto, NetworkError>
 }
