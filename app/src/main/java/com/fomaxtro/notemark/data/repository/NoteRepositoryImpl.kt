@@ -27,7 +27,7 @@ class NoteRepositoryImpl(
         }
 
         applicationScope.launch {
-            noteDataSource.createNote(note.toNoteDto())
+            noteDataSource.create(note.toNoteDto())
         }
 
         return result.mapError { it.toDataError() }
@@ -39,7 +39,7 @@ class NoteRepositoryImpl(
         }
 
         applicationScope.launch {
-            noteDataSource.updateNote(note.toNoteDto())
+            noteDataSource.update(note.toNoteDto())
         }
 
         return result.mapError { it.toDataError() }
@@ -53,5 +53,9 @@ class NoteRepositoryImpl(
 
     override suspend fun delete(note: Note) {
         noteDao.delete(note.toNoteEntity())
+
+        applicationScope.launch {
+            noteDataSource.delete(note.id.toString())
+        }
     }
 }
