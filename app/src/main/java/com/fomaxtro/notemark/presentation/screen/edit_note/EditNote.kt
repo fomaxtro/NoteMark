@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -31,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBarDefaults
@@ -38,10 +40,22 @@ import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.designsystem.theme.SpaceGrotesk
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun EditNoteRoot() {
-    EditNoteScreen()
+fun EditNoteRoot(
+    id: String?,
+    viewModel: EditNoteViewModel = koinViewModel {
+        parametersOf(id)
+    }
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    EditNoteScreen(
+        state = state,
+        onAction = viewModel::onAction
+    )
 }
 
 @Composable
@@ -82,7 +96,10 @@ private fun AdaptiveScaffold(
 }
 
 @Composable
-private fun EditNoteScreen() {
+private fun EditNoteScreen(
+    onAction: (EditNoteAction) -> Unit,
+    state: EditNoteState
+) {
     val contentPadding = PaddingValues(
         horizontal = 16.dp,
         vertical = 20.dp
@@ -127,7 +144,7 @@ private fun EditNoteScreen() {
                     .fillMaxSize()
             ) {
                 BasicTextField(
-                    value = "Note Title",
+                    value = state.title,
                     onValueChange = {},
                     textStyle = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
@@ -151,7 +168,7 @@ private fun EditNoteScreen() {
                 )
 
                 BasicTextField(
-                    value = "On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+                    value = state.content,
                     onValueChange = {},
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -179,6 +196,12 @@ private fun EditNoteScreen() {
 @Composable
 private fun EditNoteScreenPreview() {
     NoteMarkTheme {
-        EditNoteScreen()
+        EditNoteScreen(
+            state = EditNoteState(
+                title = "New Note",
+                content = "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. "
+            ),
+            onAction = {}
+        )
     }
 }

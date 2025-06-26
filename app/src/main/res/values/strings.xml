@@ -31,4 +31,5 @@
     <string name="invalid_credentials">Invalid login credentials</string>
     <string name="save_note">SAVE NOTE</string>
     <string name="user_log_out">User Log Out</string>
+    <string name="note_title">Note Title</string>
 </resources>
