@@ -6,7 +6,7 @@ import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.ValidationResult
 import com.fomaxtro.notemark.domain.validator.LoginDataValidator
-import com.fomaxtro.notemark.presentation.screen.login.mapper.toUiText
+import com.fomaxtro.notemark.presentation.mapper.toUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

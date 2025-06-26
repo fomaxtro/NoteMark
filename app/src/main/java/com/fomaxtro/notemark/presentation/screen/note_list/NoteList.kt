@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.note_list
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,14 +33,22 @@ import java.util.UUID
 
 @Composable
 fun NoteListRoot(
-    navigateToEditNote: () -> Unit,
+    navigateToEditNote: (id: UUID) -> Unit,
     viewModel: NoteListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            NoteListEvent.NavigateToEditNote -> navigateToEditNote()
+            is NoteListEvent.NavigateToEditNote -> navigateToEditNote(event.id)
+            is NoteListEvent.ShowSystemMessage -> {
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

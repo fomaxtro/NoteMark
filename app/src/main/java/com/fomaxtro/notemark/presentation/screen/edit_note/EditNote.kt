@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.edit_note
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -59,7 +62,7 @@ private fun EditNoteScreen(
     onAction: (EditNoteAction) -> Unit,
     state: EditNoteState
 ) {
-
+    val focusManager = LocalFocusManager.current
 
     if (state.showDiscardDialog) {
         AlertDialog(
@@ -126,6 +129,11 @@ private fun EditNoteScreen(
         },
         modifier = Modifier
             .imePadding()
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
     ) {
         Column(
             modifier = Modifier

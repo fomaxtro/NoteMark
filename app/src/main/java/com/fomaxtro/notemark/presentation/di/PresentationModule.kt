@@ -15,8 +15,15 @@ val presentationModule = module {
     viewModelOf(::LandingViewModel)
     viewModelOf(::RegistrationViewModel)
     viewModelOf(::LoginViewModel)
-    viewModelOf(::NoteListViewModel)
-    viewModel<EditNoteViewModel> { (id: String?) ->
+    viewModel<NoteListViewModel> {
+        val defaultTitle = androidContext().getString(R.string.note_title)
+
+        NoteListViewModel(
+            defaultTitle = defaultTitle,
+            noteRepository = get()
+        )
+    }
+    viewModel<EditNoteViewModel> { (id: String) ->
         val defaultTitle = androidContext().getString(R.string.note_title)
 
         EditNoteViewModel(

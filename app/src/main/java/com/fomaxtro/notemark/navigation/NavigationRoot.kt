@@ -115,8 +115,8 @@ fun NavigationRoot(
 
         composable<NoteList> {
             NoteListRoot(
-                navigateToEditNote = {
-                    navController.navigate(EditNote()) {
+                navigateToEditNote = { id ->
+                    navController.navigate(EditNote(id.toString())) {
                         launchSingleTop = true
                     }
                 }
@@ -127,7 +127,10 @@ fun NavigationRoot(
             val arguments = it.toRoute<EditNote>()
 
             EditNoteRoot(
-                id = arguments.id
+                id = arguments.id,
+                navigateBack = {
+                    navController.navigateUp()
+                }
             )
         }
     }
