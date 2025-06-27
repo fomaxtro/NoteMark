@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.fomaxtro.notemark.data.database.entity.NoteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
@@ -16,4 +17,7 @@ interface NoteDao {
 
     @Delete
     suspend fun delete(note: NoteEntity)
+
+    @Query("SELECT * FROM notes ORDER BY created_at DESC")
+    fun getRecentNotes(): Flow<List<NoteEntity>>
 }

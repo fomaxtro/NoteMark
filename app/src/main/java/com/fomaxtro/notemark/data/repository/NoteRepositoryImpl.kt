@@ -13,6 +13,8 @@ import com.fomaxtro.notemark.domain.repository.NoteRepository
 import com.fomaxtro.notemark.domain.util.EmptyResult
 import com.fomaxtro.notemark.domain.util.mapError
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -57,5 +59,13 @@ class NoteRepositoryImpl(
         applicationScope.launch {
             noteDataSource.delete(note.id.toString())
         }
+    }
+
+    override fun getRecentNotes(): Flow<List<Note>> {
+        return noteDao
+            .getRecentNotes()
+            .map { notes ->
+                notes.map { it.toNote() }
+            }
     }
 }

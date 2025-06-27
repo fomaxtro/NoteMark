@@ -9,4 +9,5 @@ interface UserRepository {
         email: String,
         password: String
     ): EmptyResult<RegisterError>
+    suspend fun getUsername(): String?
 }
