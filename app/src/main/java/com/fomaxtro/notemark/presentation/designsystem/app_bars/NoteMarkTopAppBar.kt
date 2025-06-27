@@ -1,7 +1,6 @@
 package com.fomaxtro.notemark.presentation.designsystem.app_bars
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,8 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
-import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
-import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 
 @OptIn(ExperimentalMaterial3Api::class)
 object NoteMarkTopAppBarDefaults {
@@ -42,10 +39,9 @@ object NoteMarkTopAppBarDefaults {
 fun NoteMarkTopAppBar(
     title: @Composable () -> Unit,
     action: @Composable () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
-    val deviceOrientation = rememberDeviceOrientation()
-
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.surfaceContainerLowest
@@ -54,6 +50,7 @@ fun NoteMarkTopAppBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(NoteMarkTopAppBarDefaults.padding)
+                .padding(contentPadding)
                 .windowInsetsPadding(NoteMarkTopAppBarDefaults.windowInsets)
                 .height(NoteMarkTopAppBarDefaults.height),
             verticalAlignment = Alignment.CenterVertically,
@@ -64,16 +61,7 @@ fun NoteMarkTopAppBar(
                     fontSize = 20.sp
                 )
             ) {
-                Box(
-                    modifier = Modifier
-                        .then(
-                            if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
-                                Modifier.padding(start = 60.dp)
-                            } else Modifier
-                        )
-                ) {
-                    title()
-                }
+                title()
             }
 
             action()

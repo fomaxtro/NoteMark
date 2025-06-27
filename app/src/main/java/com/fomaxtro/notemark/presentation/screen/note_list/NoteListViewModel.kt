@@ -4,25 +4,71 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.domain.model.Note
 import com.fomaxtro.notemark.domain.repository.NoteRepository
+import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.util.Result
+import com.fomaxtro.notemark.presentation.mapper.toNoteUi
 import com.fomaxtro.notemark.presentation.mapper.toUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.util.UUID
 
 class NoteListViewModel(
     private val defaultTitle: String,
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(NoteListState())
-    val state = _state.asStateFlow()
+    val state = _state
+        .onStart {
+            getUsername()
+            loadNotes()
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            NoteListState()
+        )
 
     private val eventChannel = Channel<NoteListEvent>()
     val events = eventChannel.receiveAsFlow()
+
+    private fun getUsername() {
+        viewModelScope.launch {
+            val username = userRepository.getUsername()
+
+            _state.update {
+                it.copy(
+                    username = username ?: "NA"
+                )
+            }
+        }
+    }
+
+    private fun loadNotes() {
+        noteRepository
+            .getRecentNotes()
+            .map { notes ->
+                notes.map { it.toNoteUi() }
+            }
+            .onEach { notes ->
+                _state.update {
+                    it.copy(
+                        notes = notes
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
     fun onAction(action: NoteListAction) {
         when (action) {

@@ -20,7 +20,8 @@ val presentationModule = module {
 
         NoteListViewModel(
             defaultTitle = defaultTitle,
-            noteRepository = get()
+            noteRepository = get(),
+            userRepository = get()
         )
     }
     viewModel<EditNoteViewModel> { (id: String) ->

@@ -38,4 +38,5 @@
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep Editing</string>
     <string name="disk_full">Storage full. Unable to save data</string>
+    <string name="empty_note_list_placeholder">You’ve got an empty board,\n let’s place your first note on it!</string>
 </resources>

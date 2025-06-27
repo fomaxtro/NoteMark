@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.presentation.screen.note_list.model
+package com.fomaxtro.notemark.presentation.model
 
 import java.util.UUID
 
