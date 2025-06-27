@@ -110,7 +110,10 @@ private fun NoteListScreen(
                     NoteCardItem(
                         date = note.createdAt,
                         title = note.title,
-                        content = note.content
+                        content = note.content,
+                        onClick = {
+                            onAction(NoteListAction.OnNoteClick(note.id))
+                        }
                     )
                 }
             }
@@ -157,7 +160,7 @@ private fun NoteListScreenPreview() {
     NoteMarkTheme {
         NoteListScreen(
             state = NoteListState(
-                notes = emptyList(),
+                notes = notes,
                 username = "NA"
             ),
             onAction = {}

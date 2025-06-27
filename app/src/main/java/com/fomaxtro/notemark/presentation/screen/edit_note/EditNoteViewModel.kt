@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.domain.model.Note
 import com.fomaxtro.notemark.domain.repository.NoteRepository
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -102,6 +103,8 @@ class EditNoteViewModel(
                     showDiscardDialog = false
                 )
             }
+
+            delay(100)
 
             eventChannel.send(EditNoteEvent.NavigateBack)
         }

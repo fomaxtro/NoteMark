@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.note_list.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -23,6 +24,7 @@ import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 
 @Composable
 fun NoteCardItem(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     date: String,
     title: String,
@@ -43,11 +45,12 @@ fun NoteCardItem(
             .height(IntrinsicSize.Max),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-        )
+        ),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable(onClick = onClick)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -79,7 +82,8 @@ private fun NoteCardItemPreview() {
         NoteCardItem(
             date = "23 Jan 2024",
             title = "Title",
-            content = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue."
+            content = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue.",
+            onClick = {}
         )
     }
 }

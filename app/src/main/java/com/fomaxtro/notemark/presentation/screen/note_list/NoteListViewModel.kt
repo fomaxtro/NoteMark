@@ -73,6 +73,15 @@ class NoteListViewModel(
     fun onAction(action: NoteListAction) {
         when (action) {
             NoteListAction.OnNewNoteClick -> onNewNoteClick()
+            is NoteListAction.OnNoteClick -> onNoteClick(action.noteId)
+        }
+    }
+
+    private fun onNoteClick(noteId: UUID) {
+        viewModelScope.launch {
+            eventChannel.send(
+                NoteListEvent.NavigateToEditNote(noteId)
+            )
         }
     }
 
