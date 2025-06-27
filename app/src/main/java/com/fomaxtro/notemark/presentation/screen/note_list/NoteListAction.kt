@@ -1,8 +1,11 @@
 package com.fomaxtro.notemark.presentation.screen.note_list
 
-import java.util.UUID
+import com.fomaxtro.notemark.presentation.model.NoteUi
 
 sealed interface NoteListAction {
     data object OnNewNoteClick : NoteListAction
-    data class OnNoteClick(val noteId: UUID) : NoteListAction
+    data class OnNoteClick(val note: NoteUi) : NoteListAction
+    data class OnNoteLongClick(val note: NoteUi) : NoteListAction
+    data object OnDeleteNoteDialogDismiss : NoteListAction
+    data object OnDeleteNoteDialogConfirm : NoteListAction
 }

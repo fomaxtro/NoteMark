@@ -4,5 +4,6 @@ import com.fomaxtro.notemark.presentation.model.NoteUi
 
 data class NoteListState(
     val notes: List<NoteUi> = emptyList(),
-    val username: String = ""
+    val username: String = "",
+    val showDeleteNoteDialog: Boolean = false
 )

@@ -117,7 +117,7 @@ class EditNoteViewModel(
                     && state.value.title == loadedNote.title
                     && state.value.content.isEmpty()
             ) {
-                noteRepository.delete(loadedNote)
+                noteRepository.delete(loadedNote.id)
 
                 eventChannel.send(EditNoteEvent.NavigateBack)
             } else if (

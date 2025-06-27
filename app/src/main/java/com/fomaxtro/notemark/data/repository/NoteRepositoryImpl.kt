@@ -53,11 +53,14 @@ class NoteRepositoryImpl(
             .toNote()
     }
 
-    override suspend fun delete(note: Note) {
-        noteDao.delete(note.toNoteEntity())
+    override suspend fun delete(noteId: UUID) {
+        noteDao.findById(noteId.toString())
+            .also { note ->
+                noteDao.delete(note)
+            }
 
         applicationScope.launch {
-            noteDataSource.delete(note.id.toString())
+            noteDataSource.delete(noteId.toString())
         }
     }
 

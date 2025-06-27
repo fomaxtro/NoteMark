@@ -8,6 +8,7 @@ import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.presentation.mapper.toNoteUi
 import com.fomaxtro.notemark.presentation.mapper.toUiText
+import com.fomaxtro.notemark.presentation.model.NoteUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,6 +43,8 @@ class NoteListViewModel(
     private val eventChannel = Channel<NoteListEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    private var selectedNote: NoteUi? = null
+
     private fun getUsername() {
         viewModelScope.launch {
             val username = userRepository.getUsername()
@@ -73,14 +76,51 @@ class NoteListViewModel(
     fun onAction(action: NoteListAction) {
         when (action) {
             NoteListAction.OnNewNoteClick -> onNewNoteClick()
-            is NoteListAction.OnNoteClick -> onNoteClick(action.noteId)
+            is NoteListAction.OnNoteClick -> onNoteClick(action.note)
+            NoteListAction.OnDeleteNoteDialogConfirm -> onDeleteNoteDialogConfirm()
+            NoteListAction.OnDeleteNoteDialogDismiss -> onDeleteNoteDialogDismiss()
+            is NoteListAction.OnNoteLongClick -> onNoteLongClick(action.note)
         }
     }
 
-    private fun onNoteClick(noteId: UUID) {
+    private fun onNoteLongClick(note: NoteUi) {
+        selectedNote = note
+
+        _state.update {
+            it.copy(
+                showDeleteNoteDialog = true
+            )
+        }
+    }
+
+    private fun onDeleteNoteDialogDismiss() {
+        selectedNote = null
+
+        _state.update {
+            it.copy(
+                showDeleteNoteDialog = false
+            )
+        }
+    }
+
+    private fun onDeleteNoteDialogConfirm() {
+        viewModelScope.launch {
+            selectedNote?.let { note ->
+                noteRepository.delete(note.id)
+            }
+
+            _state.update {
+                it.copy(
+                    showDeleteNoteDialog = false
+                )
+            }
+        }
+    }
+
+    private fun onNoteClick(note: NoteUi) {
         viewModelScope.launch {
             eventChannel.send(
-                NoteListEvent.NavigateToEditNote(noteId)
+                NoteListEvent.NavigateToEditNote(note.id)
             )
         }
     }

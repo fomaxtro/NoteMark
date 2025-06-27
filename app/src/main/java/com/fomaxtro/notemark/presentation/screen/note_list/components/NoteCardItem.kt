@@ -1,6 +1,8 @@
 package com.fomaxtro.notemark.presentation.screen.note_list.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -13,6 +15,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +28,7 @@ import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 @Composable
 fun NoteCardItem(
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
     date: String,
     title: String,
@@ -50,7 +54,12 @@ fun NoteCardItem(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable(onClick = onClick)
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                    indication = LocalIndication.current,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -83,7 +92,8 @@ private fun NoteCardItemPreview() {
             date = "23 Jan 2024",
             title = "Title",
             content = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue.",
-            onClick = {}
+            onClick = {},
+            onLongClick = {}
         )
     }
 }

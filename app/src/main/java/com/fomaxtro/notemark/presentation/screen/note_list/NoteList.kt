@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -74,6 +77,41 @@ private fun NoteListScreen(
         PaddingValues(start = 60.dp)
     } else PaddingValues()
 
+    if (state.showDeleteNoteDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                onAction(NoteListAction.OnDeleteNoteDialogDismiss)
+            },
+            title = {
+                Text(stringResource(R.string.delete_note))
+            },
+            text = {
+                Text(stringResource(R.string.delete_note_message))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onAction(NoteListAction.OnDeleteNoteDialogConfirm)
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        onAction(NoteListAction.OnDeleteNoteDialogDismiss)
+                    }
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             NoteMarkTopAppBar(
@@ -106,13 +144,16 @@ private fun NoteListScreen(
                 verticalItemSpacing = 16.dp,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(state.notes) { note ->
+                items(state.notes, key = { it.id }) { note ->
                     NoteCardItem(
                         date = note.createdAt,
                         title = note.title,
                         content = note.content,
                         onClick = {
-                            onAction(NoteListAction.OnNoteClick(note.id))
+                            onAction(NoteListAction.OnNoteClick(note))
+                        },
+                        onLongClick = {
+                            onAction(NoteListAction.OnNoteLongClick(note))
                         }
                     )
                 }
@@ -161,7 +202,8 @@ private fun NoteListScreenPreview() {
         NoteListScreen(
             state = NoteListState(
                 notes = notes,
-                username = "NA"
+                username = "NA",
+                showDeleteNoteDialog = true
             ),
             onAction = {}
         )

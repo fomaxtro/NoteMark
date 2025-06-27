@@ -10,6 +10,6 @@ interface NoteRepository {
     suspend fun create(note: Note): EmptyResult<DataError>
     suspend fun update(note: Note): EmptyResult<DataError>
     suspend fun findById(id: UUID): Note
-    suspend fun delete(note: Note)
+    suspend fun delete(noteId: UUID)
     fun getRecentNotes(): Flow<List<Note>>
 }
