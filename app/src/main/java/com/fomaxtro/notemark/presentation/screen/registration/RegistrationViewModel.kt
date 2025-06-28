@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.registration
 
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.R
@@ -13,7 +14,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -46,7 +46,7 @@ class RegistrationViewModel(
     private val eventChannel = Channel<RegistrationEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val validateUsername = _state
+    private val validateUsername = state
         .distinctUntilChangedBy { it.username }
         .map { state ->
             registrationDataValidator.validateUsername(state.username)
@@ -74,7 +74,7 @@ class RegistrationViewModel(
             validationResult is ValidationResult.Success
         }
 
-    private val validateEmail = _state
+    private val validateEmail = state
         .distinctUntilChangedBy { it.email }
         .map { state ->
             registrationDataValidator.validateEmail(state.email)
@@ -102,10 +102,14 @@ class RegistrationViewModel(
             validationResult is ValidationResult.Success
         }
 
-    private val validatePassword = _state
-        .distinctUntilChangedBy { it.password }
-        .map { state ->
-            registrationDataValidator.validatePassword(state.password)
+    private val passwordFlow = snapshotFlow { state.value.password.text.toString() }
+    private val passwordConfirmationFlow = snapshotFlow {
+        state.value.passwordConfirmation.text.toString()
+    }
+
+    private val validatePassword = passwordFlow
+        .map { password ->
+            registrationDataValidator.validatePassword(password)
         }
         .onEach { validationResult ->
             when (validationResult) {
@@ -130,17 +134,15 @@ class RegistrationViewModel(
             validationResult is ValidationResult.Success
         }
 
-    private val validatePasswordConfirmation = _state
-        .distinctUntilChanged { old, new ->
-            old.passwordConfirmation == new.passwordConfirmation
-                    && old.password == new.password
-        }
-        .map { state ->
-            registrationDataValidator.validatePasswordConfirmation(
-                password = state.password,
-                passwordConfirmation = state.passwordConfirmation
-            )
-        }
+    private val validatePasswordConfirmation = combine(
+        passwordFlow,
+        passwordConfirmationFlow
+    ) { password, passwordConfirmation ->
+        registrationDataValidator.validatePasswordConfirmation(
+            password = password,
+            passwordConfirmation = passwordConfirmation
+        )
+    }
         .onEach { validationResult ->
             when (validationResult) {
                 is ValidationResult.Error -> {
@@ -165,25 +167,27 @@ class RegistrationViewModel(
         }
 
     private fun startUsernameEvents() {
-        _state
+        state
             .distinctUntilChangedBy { it.isFocusedUsername }
             .combine(validateUsername) { state, isValidUsername ->
-                _state.update { it.copy(
-                    usernameHint = if (state.isFocusedUsername) {
-                        UiText.StringResource(R.string.username_hint)
-                    } else{
-                        null
-                    },
-                    isUsernameError = !state.isFocusedUsername
-                            && state.username.isNotEmpty()
-                            && !isValidUsername
-                ) }
+                _state.update {
+                    it.copy(
+                        usernameHint = if (state.isFocusedUsername) {
+                            UiText.StringResource(R.string.username_hint)
+                        } else {
+                            null
+                        },
+                        isUsernameError = !state.isFocusedUsername
+                                && state.username.isNotEmpty()
+                                && !isValidUsername
+                    )
+                }
             }
             .launchIn(viewModelScope)
     }
 
     private fun startEmailEvents() {
-        _state
+        state
             .distinctUntilChangedBy { it.isFocusedEmail }
             .combine(validateEmail) { state, isValidEmail ->
                 _state.update {
@@ -198,7 +202,7 @@ class RegistrationViewModel(
     }
 
     private fun startPasswordEvents() {
-        _state
+        state
             .distinctUntilChangedBy { it.isFocusedPassword }
             .combine(validatePassword) { state, isValidPassword ->
                 _state.update {
@@ -207,7 +211,7 @@ class RegistrationViewModel(
                             UiText.StringResource(R.string.password_hint)
                         } else null,
                         isPasswordError = !state.isFocusedPassword
-                                && state.password.isNotEmpty()
+                                && state.password.text.isNotEmpty()
                                 && !isValidPassword,
                     )
                 }
@@ -216,13 +220,13 @@ class RegistrationViewModel(
     }
 
     private fun startPasswordConfirmationEvents() {
-        _state
+        state
             .distinctUntilChangedBy { it.isFocusedPasswordConfirmation }
             .combine(validatePasswordConfirmation) { state, isValidPasswordConfirmation ->
                 _state.update {
                     it.copy(
                         isPasswordConfirmationError = !state.isFocusedPasswordConfirmation
-                                && state.passwordConfirmation.isNotEmpty()
+                                && state.passwordConfirmation.text.isNotEmpty()
                                 && !isValidPasswordConfirmation,
                     )
                 }
@@ -255,14 +259,9 @@ class RegistrationViewModel(
             is RegistrationAction.OnUsernameFocusChange -> onUsernameFocusChange(action.isFocused)
             is RegistrationAction.OnEmailChange -> onEmailChange(action.email)
             is RegistrationAction.OnEmailFocusChange -> onEmailFocusChange(action.isFocused)
-            is RegistrationAction.OnPasswordChange -> onPasswordChange(action.password)
             is RegistrationAction.OnPasswordFocusChange -> onPasswordFocusChange(action.isFocused)
             is RegistrationAction.OnPasswordVisibilityChange -> {
                 onPasswordVisibilityChange(action.isVisible)
-            }
-
-            is RegistrationAction.OnPasswordConfirmationChange -> {
-                onPasswordConfirmationChange(action.passwordConfirmation)
             }
 
             is RegistrationAction.OnPasswordConfirmationFocusChange -> {
@@ -291,7 +290,7 @@ class RegistrationViewModel(
                 userRepository.register(
                     username = username,
                     email = email,
-                    password = password
+                    password = password.text.toString()
                 )
             }
 
@@ -303,10 +302,13 @@ class RegistrationViewModel(
 
             when (result) {
                 is Result.Error -> {
-                    eventChannel.send(RegistrationEvent.ShowMessage(
-                        message = result.error.toUiText()
-                    ))
+                    eventChannel.send(
+                        RegistrationEvent.ShowMessage(
+                            message = result.error.toUiText()
+                        )
+                    )
                 }
+
                 is Result.Success -> {
                     eventChannel.send(RegistrationEvent.NavigateToLogin)
                 }
@@ -336,14 +338,6 @@ class RegistrationViewModel(
         }
     }
 
-    private fun onPasswordConfirmationChange(passwordConfirmation: String) {
-        _state.update {
-            it.copy(
-                passwordConfirmation = passwordConfirmation
-            )
-        }
-    }
-
     private fun onPasswordVisibilityChange(visible: Boolean) {
         _state.update {
             it.copy(
@@ -356,14 +350,6 @@ class RegistrationViewModel(
         _state.update {
             it.copy(
                 isFocusedPassword = focused
-            )
-        }
-    }
-
-    private fun onPasswordChange(password: String) {
-        _state.update {
-            it.copy(
-                password = password
             )
         }
     }

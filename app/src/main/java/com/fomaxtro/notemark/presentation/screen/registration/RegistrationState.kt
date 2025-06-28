@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.registration
 
+import androidx.compose.foundation.text.input.TextFieldState
 import com.fomaxtro.notemark.presentation.ui.UiText
 
 data class RegistrationState(
@@ -14,14 +15,14 @@ data class RegistrationState(
     val isEmailError: Boolean = false,
     val emailError: UiText? = null,
 
-    val password: String = "",
+    val password: TextFieldState = TextFieldState(),
     val isFocusedPassword: Boolean = false,
     val passwordHint: UiText? = null,
     val isPasswordError: Boolean = false,
     val passwordError: UiText? = null,
     val showPassword: Boolean = false,
 
-    val passwordConfirmation: String = "",
+    val passwordConfirmation: TextFieldState = TextFieldState(),
     val isFocusedPasswordConfirmation: Boolean = false,
     val isPasswordConfirmationError: Boolean = false,
     val passwordConfirmationError: UiText? = null,

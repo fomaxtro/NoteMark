@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -154,10 +152,7 @@ private fun RegistrationScreen(
                 )
 
                 NoteMarkPasswordTextField(
-                    value = state.password,
-                    onValueChange = {
-                        onAction(RegistrationAction.OnPasswordChange(it))
-                    },
+                    state = state.password,
                     label = stringResource(R.string.password),
                     placeholder = stringResource(R.string.password),
                     showPassword = state.showPassword,
@@ -175,18 +170,11 @@ private fun RegistrationScreen(
                             onAction(RegistrationAction.OnPasswordFocusChange(
                                 isFocused = it.isFocused
                             ))
-                        },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    )
+                        }
                 )
 
                 NoteMarkPasswordTextField(
-                    value = state.passwordConfirmation,
-                    onValueChange = {
-                        onAction(RegistrationAction.OnPasswordConfirmationChange(it))
-                    },
+                    state = state.passwordConfirmation,
                     label = stringResource(R.string.repeat_password),
                     placeholder = stringResource(R.string.password),
                     showPassword = state.showPasswordConfirmation,
@@ -202,16 +190,7 @@ private fun RegistrationScreen(
                             onAction(RegistrationAction.OnPasswordConfirmationFocusChange(
                                 isFocused = it.isFocused
                             ))
-                        },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
                         }
-                    )
                 )
 
                 NoteMarkButton(
