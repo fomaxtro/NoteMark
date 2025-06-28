@@ -8,7 +8,7 @@ You need to specify the baseUrl for the api and valid email with active subscrip
 
 In local.properties:
 ```
-baseUrl=https://api-url/api
+api.url=https://api-url/api
 user.email=your-active@email.com
 ```
 

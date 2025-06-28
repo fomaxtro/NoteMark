@@ -1,5 +1,8 @@
 package com.fomaxtro.notemark.presentation.screen.edit_note
 
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.domain.model.Note
@@ -23,7 +26,10 @@ class EditNoteViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(
         EditNoteState(
-            title = defaultTitle
+            title = TextFieldValue(
+                text = defaultTitle,
+                selection = TextRange(defaultTitle.length)
+            )
         )
     )
     val state = _state
@@ -32,7 +38,10 @@ class EditNoteViewModel(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
             EditNoteState(
-                title = defaultTitle
+                title = TextFieldValue(
+                    text = defaultTitle,
+                    selection = TextRange(defaultTitle.length)
+                )
             )
         )
 
@@ -46,15 +55,19 @@ class EditNoteViewModel(
 
         _state.update {
             it.copy(
-                title = loadedNote.title,
-                content = loadedNote.content
+                title = TextFieldValue(
+                    text = loadedNote.title,
+                    selection = TextRange(loadedNote.title.length)
+                ),
+                content = TextFieldState(loadedNote.content)
             )
         }
+
+        eventChannel.send(EditNoteEvent.RequestTitleFocus)
     }
 
     fun onAction(action: EditNoteAction) {
         when (action) {
-            is EditNoteAction.OnContentChange -> onContentChange(action.content)
             EditNoteAction.OnDiscardClick -> onDiscardClick()
             EditNoteAction.OnDiscardDialogConfirm -> onDiscardDialogConfirm()
             EditNoteAction.OnDiscardDialogDismiss -> onDiscardDialogDismiss()
@@ -63,7 +76,7 @@ class EditNoteViewModel(
         }
     }
 
-    private fun onTitleChange(title: String) {
+    private fun onTitleChange(title: TextFieldValue) {
         _state.update {
             it.copy(
                 title = title
@@ -76,8 +89,8 @@ class EditNoteViewModel(
             val note = with(state.value) {
                 Note(
                     id = loadedNote.id,
-                    title = title,
-                    content = content,
+                    title = title.text,
+                    content = content.text.toString(),
                     createdAt = loadedNote.createdAt,
                     lastEditedAt = Instant.now()
                 )
@@ -112,17 +125,14 @@ class EditNoteViewModel(
 
     private fun onDiscardClick() {
         viewModelScope.launch {
-            if (
-                state.value.title == defaultTitle
-                    && state.value.title == loadedNote.title
-                    && state.value.content.isEmpty()
-            ) {
+            val title = state.value.title.text
+            val content = state.value.content.text.toString()
+
+            if (title == defaultTitle && title == loadedNote.title && content.isEmpty()) {
                 noteRepository.delete(loadedNote.id)
 
                 eventChannel.send(EditNoteEvent.NavigateBack)
-            } else if (
-                state.value.title != loadedNote.title || state.value.content != loadedNote.content
-            ) {
+            } else if (title != loadedNote.title || content != loadedNote.content) {
                 _state.update {
                     it.copy(
                         showDiscardDialog = true
@@ -131,14 +141,6 @@ class EditNoteViewModel(
             } else {
                 eventChannel.send(EditNoteEvent.NavigateBack)
             }
-        }
-    }
-
-    private fun onContentChange(content: String) {
-        _state.update {
-            it.copy(
-                content = content
-            )
         }
     }
 }

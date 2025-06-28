@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +37,8 @@ fun AutoScrolledBasicTextField(
     state: TextFieldState,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle.Default,
-    decorator: TextFieldDecorator? = null
+    decorator: TextFieldDecorator? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     val scrollState = rememberScrollState()
     var innerTextFieldHeight by remember {
@@ -59,8 +61,8 @@ fun AutoScrolledBasicTextField(
             val scrollDelta = cursorPosition - innerTextFieldHeight
 
             if (scrollDelta.roundToInt() > 0) {
-                val percentageDeltaScroll = scrollDelta / scrollableArea
-                val targetScroll = scrollState.maxValue * percentageDeltaScroll
+                val percentageScrollDelta = scrollDelta / scrollableArea
+                val targetScroll = scrollState.maxValue * percentageScrollDelta
 
                 scrollState.scrollTo(targetScroll.roundToInt())
             }
@@ -86,10 +88,10 @@ fun AutoScrolledBasicTextField(
         onTextLayout = { textLayout ->
             textLayoutResult = textLayout()
         },
-        scrollState = scrollState,
         cursorBrush = SolidColor(
             MaterialTheme.colorScheme.primary
-        )
+        ),
+        keyboardOptions = keyboardOptions
     )
 }
 
