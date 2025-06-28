@@ -135,7 +135,13 @@ private fun NoteListScreen(
     ) { innerPadding ->
         if (state.notes.isNotEmpty()) {
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Fixed(2),
+                columns = StaggeredGridCells.Fixed(
+                    if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
+                        3
+                    } else{
+                        2
+                    }
+                ),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
