@@ -176,7 +176,11 @@ private fun EditNoteScreen(
                 decorationBox = { innerTextField ->
                     PlainTextFieldDecorationBox(
                         value = state.title.text,
-                        innerTextField = innerTextField
+                        innerTextField = innerTextField,
+                        placeHolder = stringResource(R.string.note_title),
+                        textStyle = MaterialTheme.typography.titleLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
                 },
                 cursorBrush = SolidColor(
