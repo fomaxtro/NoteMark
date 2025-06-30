@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
-import timber.log.Timber
 
 class NavigationViewModel(
     sessionStorage: SecureSessionStorage
@@ -23,7 +22,6 @@ class NavigationViewModel(
             .drop(1)
             .filter { it == null }
             .onEach {
-                Timber.d("Event emmited")
                 eventChannel.send(NavigationEvent.Logout)
             }
             .launchIn(viewModelScope)
