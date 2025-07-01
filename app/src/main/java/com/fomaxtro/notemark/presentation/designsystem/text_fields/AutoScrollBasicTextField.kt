@@ -125,7 +125,7 @@ private fun AutoScrolledBasicTextPreview() {
                 PlainTextFieldDecorationBox(
                     value = state.text.toString(),
                     innerTextField = innerTextField,
-                    placeHolder = stringResource(R.string.note_content_placeholder),
+                    placeholder = stringResource(R.string.note_content_placeholder),
                     textStyle = contentTextStyle
                 )
             },

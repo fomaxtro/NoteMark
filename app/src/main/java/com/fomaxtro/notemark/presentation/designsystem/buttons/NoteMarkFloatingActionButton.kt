@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,7 +24,8 @@ import com.fomaxtro.notemark.presentation.designsystem.theme.primaryGradient
 @Composable
 fun NoteMarkFloatingActionButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -36,11 +39,11 @@ fun NoteMarkFloatingActionButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.plus),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
+        CompositionLocalProvider(
+            LocalContentColor provides MaterialTheme.colorScheme.onPrimary
+        ) {
+            content()
+        }
     }
 }
 
@@ -50,6 +53,11 @@ private fun NoteMarkFloatingActionButtonPreview() {
     NoteMarkTheme {
         NoteMarkFloatingActionButton(
             onClick = {}
-        )
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.plus),
+                contentDescription = null
+            )
+        }
     }
 }

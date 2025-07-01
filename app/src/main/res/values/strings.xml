@@ -43,4 +43,7 @@
     <string name="delete_note_message">Are you sure you want to delete this note?\nThis action cannot be undone.</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="add_note">Add note</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
 </resources>

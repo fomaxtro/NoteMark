@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.fomaxtro.notemark.R
@@ -61,7 +62,11 @@ fun NoteMarkPasswordTextField(
                             } else {
                                 ImageVector.vectorResource(R.drawable.eye)
                             },
-                            contentDescription = null
+                            contentDescription = if (showPassword) {
+                                stringResource(R.string.hide_password)
+                            } else {
+                                stringResource(R.string.show_password)
+                            }
                         )
                     }
                 },

@@ -9,7 +9,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.navigation.NavigationRoot
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
-import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -23,15 +22,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            KoinAndroidContext {
-                val state by viewModel.state.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle()
 
-                if (!state.isCheckingAuth) {
-                    NoteMarkTheme {
-                        NavigationRoot(
-                            isLoggedIn = state.isLoggedIn
-                        )
-                    }
+            if (!state.isCheckingAuth) {
+                NoteMarkTheme {
+                    NavigationRoot(
+                        isLoggedIn = state.isLoggedIn
+                    )
                 }
             }
         }

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PlainTextFieldDecorationBox(
     innerTextField: @Composable () -> Unit,
-    placeHolder: String? = null,
+    placeholder: String? = null,
     textStyle: TextStyle? = null,
     value: String
 ) {
@@ -23,9 +23,9 @@ fun PlainTextFieldDecorationBox(
                 vertical = 20.dp
             )
     ) {
-        if (value.isEmpty() && placeHolder != null) {
+        if (value.isEmpty() && placeholder != null) {
             Text(
-                text = placeHolder,
+                text = placeholder,
                 style = textStyle ?: LocalTextStyle.current
             )
         }

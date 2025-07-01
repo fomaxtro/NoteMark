@@ -126,7 +126,7 @@ private fun EditNoteScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = null
+                            contentDescription = stringResource(R.string.cancel)
                         )
                     }
                 },
@@ -177,7 +177,7 @@ private fun EditNoteScreen(
                     PlainTextFieldDecorationBox(
                         value = state.title.text,
                         innerTextField = innerTextField,
-                        placeHolder = stringResource(R.string.note_title),
+                        placeholder = stringResource(R.string.note_title),
                         textStyle = MaterialTheme.typography.titleLarge.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -216,7 +216,7 @@ private fun EditNoteScreen(
                     PlainTextFieldDecorationBox(
                         value = state.content.text.toString(),
                         innerTextField = innerTextField,
-                        placeHolder = stringResource(R.string.note_content_placeholder),
+                        placeholder = stringResource(R.string.note_content_placeholder),
                         textStyle = contentTextStyle
                     )
                 },
