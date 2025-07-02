@@ -11,6 +11,8 @@ import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.util.EmptyResult
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.asEmptyResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthDataSource,
@@ -43,5 +45,11 @@ class AuthRepositoryImpl(
                 result.asEmptyResult()
             }
         }
+    }
+
+    override fun isAuthenticated(): Flow<Boolean> {
+        return sessionStorage
+            .getAuthInfo()
+            .map { it != null }
     }
 }
