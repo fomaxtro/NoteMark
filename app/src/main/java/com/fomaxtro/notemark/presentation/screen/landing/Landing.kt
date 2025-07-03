@@ -66,7 +66,7 @@ fun LandingRoot(
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun LandingScreen(
-    onAction: (LandingAction) -> Unit
+    onAction: (LandingAction) -> Unit = {}
 ) {
     val deviceOrientation = rememberDeviceOrientation()
     var mainSheetHeight by rememberSaveable {
@@ -235,8 +235,6 @@ private fun MainSheet(
 @Composable
 private fun LandingScreenPreview() {
     NoteMarkTheme {
-        LandingScreen(
-            onAction = {}
-        )
+        LandingScreen()
     }
 }

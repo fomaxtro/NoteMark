@@ -77,7 +77,7 @@ fun EditNoteRoot(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EditNoteScreen(
-    onAction: (EditNoteAction) -> Unit,
+    onAction: (EditNoteAction) -> Unit = {},
     state: EditNoteState,
     focusRequester: FocusRequester
 ) {
@@ -243,7 +243,6 @@ private fun EditNoteScreenPreview() {
                 ),
                 showDiscardDialog = false
             ),
-            onAction = {},
             focusRequester = FocusRequester()
         )
     }

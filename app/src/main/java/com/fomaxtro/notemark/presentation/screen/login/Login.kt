@@ -72,7 +72,7 @@ fun LoginRoot(
 
 @Composable
 private fun LoginScreen(
-    onAction: (LoginAction) -> Unit,
+    onAction: (LoginAction) -> Unit = {},
     state: LoginState,
     snackbarHostState: SnackbarHostState
 ) {
@@ -164,7 +164,6 @@ private fun LoginScreenPreview() {
     NoteMarkTheme {
         LoginScreen(
             state = LoginState(),
-            onAction = {},
             snackbarHostState = SnackbarHostState()
         )
     }

@@ -71,7 +71,7 @@ fun RegistrationRoot(
 
 @Composable
 private fun RegistrationScreen(
-    onAction: (RegistrationAction) -> Unit,
+    onAction: (RegistrationAction) -> Unit = {},
     snackbarHostState: SnackbarHostState,
     state: RegistrationState
 ) {
@@ -230,7 +230,6 @@ private fun RegistrationScreenPreview() {
     NoteMarkTheme {
         RegistrationScreen(
             state = RegistrationState(),
-            onAction = {},
             snackbarHostState = SnackbarHostState()
         )
     }
