@@ -44,6 +44,7 @@ import com.fomaxtro.notemark.presentation.screen.edit_note.components.AdaptiveSc
 import com.fomaxtro.notemark.presentation.screen.edit_note.components.PlainTextFieldDecorationBox
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
+import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -82,6 +83,7 @@ private fun EditNoteScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val deviceOrientation = rememberDeviceOrientation()
+    val contentPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.showDiscardDialog) {
         AlertDialog(
@@ -143,7 +145,8 @@ private fun EditNoteScreen(
                             lineHeight = 24.sp
                         )
                     }
-                }
+                },
+                contentPadding = contentPadding
             )
         },
         modifier = Modifier

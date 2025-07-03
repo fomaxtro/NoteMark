@@ -38,6 +38,7 @@ import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
 import com.fomaxtro.notemark.presentation.screen.note_list.components.NoteCardItem
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
+import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
@@ -75,10 +76,7 @@ private fun NoteListScreen(
     state: NoteListState
 ) {
     val deviceOrientation = rememberDeviceOrientation()
-
-    val contentPadding = if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
-        PaddingValues(start = 60.dp)
-    } else PaddingValues()
+    val contentPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.showDeleteNoteDialog) {
         AlertDialog(
@@ -154,7 +152,9 @@ private fun NoteListScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(contentPadding),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(
+                    vertical = 16.dp
+                ),
                 verticalItemSpacing = 16.dp,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -203,12 +203,6 @@ private fun NoteListScreenPreview() {
     val notes = listOf(
         previewNoteUi.copy(
             content = "Augue non mauris ante viverra ut arcu sed ut "
-        ),
-        previewNoteUi.copy(
-            content = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue."
-        ),
-        previewNoteUi.copy(
-            content = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue."
         )
     )
 
@@ -216,8 +210,7 @@ private fun NoteListScreenPreview() {
         NoteListScreen(
             state = NoteListState(
                 notes = notes,
-                username = "NA",
-                showDeleteNoteDialog = true
+                username = "NA"
             ),
             onAction = {}
         )
