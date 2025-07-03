@@ -6,4 +6,5 @@ import java.util.UUID
 sealed interface NoteListEvent {
     data class NavigateToEditNote(val id: UUID) : NoteListEvent
     data class ShowSystemMessage(val message: UiText) : NoteListEvent
+    data object NavigateToSettings : NoteListEvent
 }

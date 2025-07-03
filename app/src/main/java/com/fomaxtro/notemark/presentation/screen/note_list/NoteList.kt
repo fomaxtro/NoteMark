@@ -47,6 +47,7 @@ import java.util.UUID
 @Composable
 fun NoteListRoot(
     navigateToEditNote: (id: UUID) -> Unit,
+    navigateToSettings: () -> Unit,
     viewModel: NoteListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -62,6 +63,7 @@ fun NoteListRoot(
                     Toast.LENGTH_LONG
                 ).show()
             }
+            NoteListEvent.NavigateToSettings -> navigateToSettings()
         }
     }
 
@@ -73,7 +75,7 @@ fun NoteListRoot(
 
 @Composable
 private fun NoteListScreen(
-    onAction: (NoteListAction) -> Unit,
+    onAction: (NoteListAction) -> Unit = {},
     state: NoteListState
 ) {
     val deviceOrientation = rememberDeviceOrientation()
@@ -122,7 +124,9 @@ private fun NoteListScreen(
                 },
                 action = {
                     IconButton(
-                        onClick = {}
+                        onClick = {
+                            onAction(NoteListAction.OnSettingsClick)
+                        }
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.settings),
@@ -220,8 +224,7 @@ private fun NoteListScreenPreview() {
             state = NoteListState(
                 notes = notes,
                 username = "NA"
-            ),
-            onAction = {}
+            )
         )
     }
 }

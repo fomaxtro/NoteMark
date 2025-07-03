@@ -26,9 +26,16 @@ import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBa
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 
+@Composable
+fun SettingsRoot() {
+    SettingsScreen()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsScreen() {
+private fun SettingsScreen(
+    onAction: (SettingsAction) -> Unit = {}
+) {
     val contentPadding = rememberAdaptiveHorizontalPadding()
 
     Scaffold(
@@ -39,7 +46,9 @@ private fun SettingsScreen() {
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = {}
+                        onClick = {
+                            onAction(SettingsAction.OnNavigateBackClick)
+                        }
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.chevron_left),
@@ -60,7 +69,9 @@ private fun SettingsScreen() {
                 .padding(contentPadding)
         ) {
             TextButton(
-                onClick = {},
+                onClick = {
+                    onAction(SettingsAction.OnLogoutClick)
+                },
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 )

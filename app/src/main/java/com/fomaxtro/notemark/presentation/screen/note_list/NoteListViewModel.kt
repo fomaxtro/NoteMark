@@ -80,6 +80,13 @@ class NoteListViewModel(
             NoteListAction.OnDeleteNoteDialogConfirm -> onDeleteNoteDialogConfirm()
             NoteListAction.OnDeleteNoteDialogDismiss -> onDeleteNoteDialogDismiss()
             is NoteListAction.OnNoteLongClick -> onNoteLongClick(action.note)
+            NoteListAction.OnSettingsClick -> onSettingsClick()
+        }
+    }
+
+    private fun onSettingsClick() {
+        viewModelScope.launch {
+            eventChannel.send(NoteListEvent.NavigateToSettings)
         }
     }
 

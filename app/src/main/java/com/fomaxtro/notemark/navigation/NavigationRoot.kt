@@ -13,11 +13,13 @@ import com.fomaxtro.notemark.navigation.route.Landing
 import com.fomaxtro.notemark.navigation.route.Login
 import com.fomaxtro.notemark.navigation.route.NoteList
 import com.fomaxtro.notemark.navigation.route.Registration
+import com.fomaxtro.notemark.navigation.route.Settings
 import com.fomaxtro.notemark.presentation.screen.edit_note.EditNoteRoot
 import com.fomaxtro.notemark.presentation.screen.landing.LandingRoot
 import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
 import com.fomaxtro.notemark.presentation.screen.note_list.NoteListRoot
 import com.fomaxtro.notemark.presentation.screen.registration.RegistrationRoot
+import com.fomaxtro.notemark.presentation.screen.settings.SettingsRoot
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -119,6 +121,11 @@ fun NavigationRoot(
                     navController.navigate(EditNote(id.toString())) {
                         launchSingleTop = true
                     }
+                },
+                navigateToSettings = {
+                    navController.navigate(Settings) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -132,6 +139,10 @@ fun NavigationRoot(
                     navController.navigateUp()
                 }
             )
+        }
+
+        composable<Settings> {
+            SettingsRoot()
         }
     }
 }
