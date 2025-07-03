@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -120,6 +121,14 @@ private fun NoteListScreen(
                     Text(text = stringResource(R.string.app_name))
                 },
                 action = {
+                    IconButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.settings),
+                            contentDescription = stringResource(R.string.settings)
+                        )
+                    }
                     Avatar(name = state.username)
                 },
                 contentPadding = contentPadding

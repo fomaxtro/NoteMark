@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.designsystem.app_bars
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
@@ -60,7 +62,11 @@ fun NoteMarkTopAppBar(
                 }
             }
 
-            action()
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                action()
+            }
         }
     }
 }

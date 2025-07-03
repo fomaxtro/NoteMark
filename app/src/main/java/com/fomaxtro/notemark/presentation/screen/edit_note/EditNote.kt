@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
+import com.fomaxtro.notemark.presentation.designsystem.scaffolds.AdaptiveScaffold
 import com.fomaxtro.notemark.presentation.designsystem.text_fields.AutoScrolledBasicTextField
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.designsystem.theme.SpaceGrotesk
-import com.fomaxtro.notemark.presentation.screen.edit_note.components.AdaptiveScaffold
 import com.fomaxtro.notemark.presentation.screen.edit_note.components.PlainTextFieldDecorationBox
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents

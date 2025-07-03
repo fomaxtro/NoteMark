@@ -46,4 +46,7 @@
     <string name="add_note">Add note</string>
     <string name="hide_password">Hide password</string>
     <string name="show_password">Show password</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="settings">SETTINGS</string>
+    <string name="log_out">Log out</string>
 </resources>
