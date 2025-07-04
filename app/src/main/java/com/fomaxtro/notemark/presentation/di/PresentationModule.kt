@@ -6,6 +6,7 @@ import com.fomaxtro.notemark.presentation.screen.landing.LandingViewModel
 import com.fomaxtro.notemark.presentation.screen.login.LoginViewModel
 import com.fomaxtro.notemark.presentation.screen.note_list.NoteListViewModel
 import com.fomaxtro.notemark.presentation.screen.registration.RegistrationViewModel
+import com.fomaxtro.notemark.presentation.screen.settings.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -33,4 +34,5 @@ val presentationModule = module {
             noteRepository = get()
         )
     }
+    viewModelOf(::SettingsViewModel)
 }

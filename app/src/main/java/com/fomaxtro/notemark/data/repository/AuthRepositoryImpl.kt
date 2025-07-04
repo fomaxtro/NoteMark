@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.data.repository
 
+import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.dto.AuthInfo
 import com.fomaxtro.notemark.data.datastore.dto.TokenPair
@@ -12,15 +13,15 @@ import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.util.EmptyResult
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.asEmptyResult
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthDataSource,
     private val sessionStorage: SecureSessionStorage,
-    private val applicationScope: CoroutineScope
+    private val database: NoteMarkDatabase
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): EmptyResult<LoginError> {
         val result =  authDataSource
@@ -58,16 +59,18 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
+        withContext(Dispatchers.IO) {
+            database.clearAllTables()
+        }
+
         val tokenPair = sessionStorage.getTokenPair()
 
-        applicationScope.launch {
-            tokenPair?.let { tokenPair ->
-                authDataSource.logout(
-                    LogoutRequest(
-                        refreshToken = tokenPair.refreshToken
-                    )
+        tokenPair?.let { tokenPair ->
+            authDataSource.logout(
+                LogoutRequest(
+                    refreshToken = tokenPair.refreshToken
                 )
-            }
+            )
         }
 
         sessionStorage.removeAuthInfo()

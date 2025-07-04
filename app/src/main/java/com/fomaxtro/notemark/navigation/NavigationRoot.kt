@@ -142,7 +142,11 @@ fun NavigationRoot(
         }
 
         composable<Settings> {
-            SettingsRoot()
+            SettingsRoot(
+                navigateBack = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }
