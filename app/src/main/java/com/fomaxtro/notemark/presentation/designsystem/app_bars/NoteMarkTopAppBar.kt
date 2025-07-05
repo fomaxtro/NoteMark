@@ -2,7 +2,6 @@ package com.fomaxtro.notemark.presentation.designsystem.app_bars
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,8 +31,7 @@ fun NoteMarkTopAppBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     action: @Composable () -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {},
-    contentPadding: PaddingValues = PaddingValues()
+    navigationIcon: @Composable () -> Unit = {}
 ) {
     val contentPadding = rememberAdaptiveHorizontalPadding()
 

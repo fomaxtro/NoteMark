@@ -82,42 +82,23 @@ fun NoteMarkScaffold(
 
                 val contentPlaceable = contentMeasurable
                     .firstOrNull()
-                    ?.measure(constraints)
+                    ?.measure(
+                        constraints.copy(
+                            minWidth = 0
+                        )
+                    )
 
                 layout(constraints.maxWidth, constraints.maxHeight) {
-                    contentPlaceable?.place(0, 0)
                     topAppBarPlaceable?.place(0, 0)
-                }
-            }
-            /*if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
-                topAppBar()
 
-                Box(
-                    modifier = Modifier
-                        .width(540.dp)
-                        .padding(contentPadding)
-                        .fillMaxHeight()
-                        .align(Alignment.TopCenter)
-                        .windowInsetsPadding(NoteMarkScaffoldDefaults.contentWindowInsets)
-                ) {
-                    content()
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    topAppBar()
-
-                    Box(
-                        modifier = Modifier
-                            .padding(contentPadding)
-                            .windowInsetsPadding(NoteMarkScaffoldDefaults.contentWindowInsets)
-                    ) {
-                        content()
+                    contentPlaceable?.let { placeable ->
+                        placeable.place(
+                            x = (constraints.maxWidth - placeable.width) / 2,
+                            y = 0
+                        )
                     }
                 }
-            }*/
+            }
 
             Box(
                 modifier = Modifier

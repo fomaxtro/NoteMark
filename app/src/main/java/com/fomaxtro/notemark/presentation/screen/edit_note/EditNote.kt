@@ -3,9 +3,11 @@ package com.fomaxtro.notemark.presentation.screen.edit_note
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,18 +35,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
-import com.fomaxtro.notemark.presentation.designsystem.scaffolds.AdaptiveScaffold
+import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.text_fields.AutoScrolledBasicTextField
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.designsystem.theme.SpaceGrotesk
 import com.fomaxtro.notemark.presentation.screen.edit_note.components.PlainTextFieldDecorationBox
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
-import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -83,7 +85,6 @@ private fun EditNoteScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val deviceOrientation = rememberDeviceOrientation()
-    val contentPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.showDiscardDialog) {
         AlertDialog(
@@ -117,7 +118,7 @@ private fun EditNoteScreen(
         )
     }
 
-    AdaptiveScaffold(
+    NoteMarkScaffold(
         topAppBar = {
             NoteMarkTopAppBar(
                 title = {
@@ -145,26 +146,31 @@ private fun EditNoteScreen(
                             lineHeight = 24.sp
                         )
                     }
-                },
-                contentPadding = contentPadding
+                }
             )
         },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier
             .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
                 }
             }
-    ) {
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxHeight()
                 .then(
                     if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
                         Modifier
+                            .width(540.dp)
                             .verticalScroll(rememberScrollState())
                             .imePadding()
-                    } else Modifier
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(innerPadding)
+                    }
                 )
         ) {
             BasicTextField(
