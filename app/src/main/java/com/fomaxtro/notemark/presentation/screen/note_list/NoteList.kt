@@ -15,7 +15,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,13 +32,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
 import com.fomaxtro.notemark.presentation.designsystem.buttons.NoteMarkFloatingActionButton
+import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.model.NoteUi
 import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
 import com.fomaxtro.notemark.presentation.screen.note_list.components.NoteCardItem
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
-import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
@@ -79,7 +78,6 @@ private fun NoteListScreen(
     state: NoteListState
 ) {
     val deviceOrientation = rememberDeviceOrientation()
-    val contentPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.showDeleteNoteDialog) {
         AlertDialog(
@@ -116,8 +114,8 @@ private fun NoteListScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
+    NoteMarkScaffold(
+        topAppBar = {
             NoteMarkTopAppBar(
                 title = {
                     Text(text = stringResource(R.string.app_name))
@@ -134,8 +132,7 @@ private fun NoteListScreen(
                         )
                     }
                     Avatar(name = state.username)
-                },
-                contentPadding = contentPadding
+                }
             )
         },
         floatingActionButton = {
@@ -163,8 +160,7 @@ private fun NoteListScreen(
                 ),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(contentPadding),
+                    .padding(innerPadding),
                 contentPadding = PaddingValues(
                     vertical = 16.dp
                 ),
@@ -190,7 +186,6 @@ private fun NoteListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(innerPadding)
-                    .padding(horizontal = 16.dp)
                     .padding(top = 80.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
@@ -222,7 +217,7 @@ private fun NoteListScreenPreview() {
     NoteMarkTheme {
         NoteListScreen(
             state = NoteListState(
-                notes = notes,
+                notes = emptyList(),
                 username = "NA"
             )
         )

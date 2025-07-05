@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
+import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 
 @Composable
 fun NoteMarkTopAppBar(
@@ -34,6 +35,8 @@ fun NoteMarkTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues()
 ) {
+    val contentPadding = rememberAdaptiveHorizontalPadding()
+
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.surfaceContainerLowest
@@ -41,9 +44,9 @@ fun NoteMarkTopAppBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(NoteMarkTopAppBarDefaults.padding)
                 .padding(contentPadding)
-                .windowInsetsPadding(NoteMarkTopAppBarDefaults.windowInsets)
                 .height(NoteMarkTopAppBarDefaults.height),
             verticalAlignment = Alignment.CenterVertically
         ) {
