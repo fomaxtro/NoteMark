@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -24,7 +25,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
-import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
+import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
+import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 
 private enum class NoteMarkScaffoldSlot {
     TOP_APP_BAR,
@@ -40,8 +42,8 @@ fun NoteMarkScaffold(
     floatingActionButtonPosition: NoteMarkFabPosition = NoteMarkFabPosition.END,
     content: @Composable (innerPadding: PaddingValues) -> Unit,
 ) {
-    val horizontalPadding = rememberAdaptiveHorizontalPadding()
     val density = LocalDensity.current
+    val deviceOrientation = rememberDeviceOrientation()
 
     Surface(
         modifier = modifier
@@ -67,7 +69,11 @@ fun NoteMarkScaffold(
                 val contentMeasurable = subcompose(NoteMarkScaffoldSlot.CONTENT) {
                     Box(
                         modifier = Modifier
-                            .padding(horizontalPadding)
+                            .then(
+                                if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
+                                    Modifier.statusBarsPadding()
+                                } else Modifier
+                            )
                             .navigationBarsPadding()
                     ) {
                         content(

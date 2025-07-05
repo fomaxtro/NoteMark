@@ -39,6 +39,7 @@ import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
 import com.fomaxtro.notemark.presentation.screen.note_list.components.NoteCardItem
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
+import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
@@ -78,6 +79,7 @@ private fun NoteListScreen(
     state: NoteListState
 ) {
     val deviceOrientation = rememberDeviceOrientation()
+    val horizontalPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.showDeleteNoteDialog) {
         AlertDialog(
@@ -160,7 +162,8 @@ private fun NoteListScreen(
                 ),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .padding(horizontalPadding),
                 contentPadding = PaddingValues(
                     vertical = 16.dp
                 ),
