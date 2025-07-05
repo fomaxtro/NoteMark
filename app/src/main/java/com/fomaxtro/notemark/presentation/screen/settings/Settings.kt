@@ -89,8 +89,7 @@ private fun SettingsScreen(
                                 contentDescription = stringResource(R.string.navigate_back)
                             )
                         }
-                    },
-                    contentPadding = contentPadding
+                    }
                 )
             },
             containerColor = Color.White
