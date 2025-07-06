@@ -49,4 +49,5 @@
     <string name="navigate_back">Navigate back</string>
     <string name="settings">SETTINGS</string>
     <string name="log_out">Log out</string>
+    <string name="all_notes">ALL NOTES</string>
 </resources>

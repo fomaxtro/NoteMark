@@ -12,14 +12,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -28,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
+import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
@@ -58,7 +57,7 @@ private fun SettingsScreen(
     onAction: (SettingsAction) -> Unit = {},
     state: SettingsState
 ) {
-    val contentPadding = rememberAdaptiveHorizontalPadding()
+    val horizontalPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.isLoggingOut) {
         Surface(
@@ -72,11 +71,14 @@ private fun SettingsScreen(
             )
         }
     } else {
-        Scaffold(
-            topBar = {
+        NoteMarkScaffold(
+            topAppBar = {
                 NoteMarkTopAppBar(
                     title = {
-                        Text(stringResource(R.string.settings))
+                        Text(
+                            text = stringResource(R.string.settings),
+                            style = MaterialTheme.typography.titleSmall
+                        )
                     },
                     navigationIcon = {
                         IconButton(
@@ -92,14 +94,13 @@ private fun SettingsScreen(
                     }
                 )
             },
-            containerColor = Color.White
-        ) { innerTextField ->
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+        ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerTextField)
-                    .padding(top = 16.dp)
-                    .padding(contentPadding)
+                    .padding(innerPadding)
+                    .padding(horizontalPadding)
             ) {
                 TextButton(
                     onClick = {
@@ -131,9 +132,7 @@ private fun SettingsScreen(
 private fun SettingsScreenPreview() {
     NoteMarkTheme {
         SettingsScreen(
-            state = SettingsState(
-                isLoggingOut = true
-            )
+            state = SettingsState()
         )
     }
 }
