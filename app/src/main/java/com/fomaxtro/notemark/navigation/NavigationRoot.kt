@@ -8,12 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.fomaxtro.notemark.R
-import com.fomaxtro.notemark.navigation.route.EditNote
-import com.fomaxtro.notemark.navigation.route.Landing
-import com.fomaxtro.notemark.navigation.route.Login
-import com.fomaxtro.notemark.navigation.route.NoteList
-import com.fomaxtro.notemark.navigation.route.Registration
-import com.fomaxtro.notemark.navigation.route.Settings
 import com.fomaxtro.notemark.presentation.screen.edit_note.EditNoteRoot
 import com.fomaxtro.notemark.presentation.screen.landing.LandingRoot
 import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
@@ -34,7 +28,7 @@ fun NavigationRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             NavigationEvent.Logout -> {
-                navController.navigate(Login) {
+                navController.navigate(Route.Login) {
                     launchSingleTop = true
 
                     popUpTo(0) {
@@ -53,24 +47,24 @@ fun NavigationRoot(
 
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) NoteList else Landing
+        startDestination = if (isLoggedIn) Route.NoteList else Route.Landing
     ) {
-        composable<Landing> {
+        composable<Route.Landing> {
             LandingRoot(
                 navigateToRegistration = {
-                    navController.navigate(Registration) {
+                    navController.navigate(Route.Registration) {
                         launchSingleTop = true
 
-                        popUpTo<Landing> {
+                        popUpTo<Route.Landing> {
                             inclusive = true
                         }
                     }
                 },
                 navigateToLogin = {
-                    navController.navigate(Login) {
+                    navController.navigate(Route.Login) {
                         launchSingleTop = true
 
-                        popUpTo<Landing> {
+                        popUpTo<Route.Landing> {
                             inclusive = true
                         }
                     }
@@ -78,13 +72,13 @@ fun NavigationRoot(
             )
         }
 
-        composable<Registration> {
+        composable<Route.Registration> {
             RegistrationRoot(
                 navigateToLogin = {
-                    navController.navigate(Login) {
+                    navController.navigate(Route.Login) {
                         launchSingleTop = true
 
-                        popUpTo<Registration> {
+                        popUpTo<Route.Registration> {
                             inclusive = true
                         }
                     }
@@ -92,22 +86,22 @@ fun NavigationRoot(
             )
         }
 
-        composable<Login> {
+        composable<Route.Login> {
             LoginRoot(
                 navigateToNoteList = {
-                    navController.navigate(NoteList) {
+                    navController.navigate(Route.NoteList) {
                         launchSingleTop = true
 
-                        popUpTo<Login> {
+                        popUpTo<Route.Login> {
                             inclusive = true
                         }
                     }
                 },
                 navigateToRegistration = {
-                    navController.navigate(Registration) {
+                    navController.navigate(Route.Registration) {
                         launchSingleTop = true
 
-                        popUpTo<Login> {
+                        popUpTo<Route.Login> {
                             inclusive = true
                         }
                     }
@@ -115,23 +109,23 @@ fun NavigationRoot(
             )
         }
 
-        composable<NoteList> {
+        composable<Route.NoteList> {
             NoteListRoot(
                 navigateToEditNote = { id ->
-                    navController.navigate(EditNote(id.toString())) {
+                    navController.navigate(Route.EditNote(id.toString())) {
                         launchSingleTop = true
                     }
                 },
                 navigateToSettings = {
-                    navController.navigate(Settings) {
+                    navController.navigate(Route.Settings) {
                         launchSingleTop = true
                     }
                 }
             )
         }
 
-        composable<EditNote> {
-            val arguments = it.toRoute<EditNote>()
+        composable<Route.EditNote> {
+            val arguments = it.toRoute<Route.EditNote>()
 
             EditNoteRoot(
                 id = arguments.id,
@@ -141,7 +135,7 @@ fun NavigationRoot(
             )
         }
 
-        composable<Settings> {
+        composable<Route.Settings> {
             SettingsRoot(
                 navigateBack = {
                     navController.navigateUp()
