@@ -37,7 +37,7 @@ private enum class NoteMarkScaffoldSlot {
 fun NoteMarkScaffold(
     modifier: Modifier = Modifier,
     topAppBar: @Composable () -> Unit,
-    containerColor: Color = MaterialTheme.colorScheme.background,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: NoteMarkFabPosition = NoteMarkFabPosition.END,
     content: @Composable (innerPadding: PaddingValues) -> Unit,

@@ -47,7 +47,6 @@ import com.fomaxtro.notemark.presentation.designsystem.theme.SpaceGrotesk
 import com.fomaxtro.notemark.presentation.screen.edit_note.components.PlainTextFieldDecorationBox
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
-import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -86,7 +85,6 @@ private fun EditNoteScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val deviceOrientation = rememberDeviceOrientation()
-    val horizontalPadding = rememberAdaptiveHorizontalPadding()
 
     if (state.showDiscardDialog) {
         AlertDialog(
@@ -151,7 +149,6 @@ private fun EditNoteScreen(
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         modifier = Modifier
             .pointerInput(Unit) {
                 detectTapGestures {
@@ -166,7 +163,6 @@ private fun EditNoteScreen(
                     if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
                         Modifier
                             .width(540.dp)
-                            .padding(horizontalPadding)
                             .verticalScroll(rememberScrollState())
                             .imePadding()
                     } else {

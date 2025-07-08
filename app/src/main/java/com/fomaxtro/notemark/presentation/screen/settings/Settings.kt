@@ -93,8 +93,7 @@ private fun SettingsScreen(
                         }
                     }
                 )
-            },
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+            }
         ) { innerPadding ->
             Column(
                 modifier = Modifier
