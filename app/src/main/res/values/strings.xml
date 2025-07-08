@@ -50,4 +50,10 @@
     <string name="settings">SETTINGS</string>
     <string name="log_out">Log out</string>
     <string name="all_notes">ALL NOTES</string>
+    <string name="just_now">Just now</string>
+    <string name="date_created">Date created</string>
+    <string name="last_edited">Last edited</string>
+    <string name="edit">Edit</string>
+    <string name="view_mode">View mode</string>
+    <string name="reader_mode">Reader mode</string>
 </resources>

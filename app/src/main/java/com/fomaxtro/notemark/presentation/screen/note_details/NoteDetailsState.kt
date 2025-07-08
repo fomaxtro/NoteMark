@@ -1,0 +1,8 @@
+package com.fomaxtro.notemark.presentation.screen.note_details
+
+import com.fomaxtro.notemark.presentation.model.NoteDetailUi
+
+data class NoteDetailsState(
+    val note: NoteDetailUi? = null,
+    val readerMode: Boolean = false
+)
