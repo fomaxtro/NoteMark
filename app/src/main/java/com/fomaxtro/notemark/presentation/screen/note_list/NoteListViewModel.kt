@@ -127,7 +127,7 @@ class NoteListViewModel(
     private fun onNoteClick(note: NoteUi) {
         viewModelScope.launch {
             eventChannel.send(
-                NoteListEvent.NavigateToEditNote(note.id)
+                NoteListEvent.NavigateToNoteDetails(note.id.toString())
             )
         }
     }
@@ -152,7 +152,7 @@ class NoteListViewModel(
                 }
                 is Result.Success -> {
                     eventChannel.send(
-                        NoteListEvent.NavigateToEditNote(note.id)
+                        NoteListEvent.NavigateToEditNote(note.id.toString())
                     )
                 }
             }

@@ -11,6 +11,7 @@ import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.screen.edit_note.EditNoteRoot
 import com.fomaxtro.notemark.presentation.screen.landing.LandingRoot
 import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
+import com.fomaxtro.notemark.presentation.screen.note_details.NoteDetailsRoot
 import com.fomaxtro.notemark.presentation.screen.note_list.NoteListRoot
 import com.fomaxtro.notemark.presentation.screen.registration.RegistrationRoot
 import com.fomaxtro.notemark.presentation.screen.settings.SettingsRoot
@@ -112,12 +113,17 @@ fun NavigationRoot(
         composable<Route.NoteList> {
             NoteListRoot(
                 navigateToEditNote = { id ->
-                    navController.navigate(Route.EditNote(id.toString())) {
+                    navController.navigate(Route.EditNote(id)) {
                         launchSingleTop = true
                     }
                 },
                 navigateToSettings = {
                     navController.navigate(Route.Settings) {
+                        launchSingleTop = true
+                    }
+                },
+                navigateToNoteDetails = { id ->
+                    navController.navigate(Route.NoteDetails(id)) {
                         launchSingleTop = true
                     }
                 }
@@ -137,6 +143,17 @@ fun NavigationRoot(
 
         composable<Route.Settings> {
             SettingsRoot(
+                navigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Route.NoteDetails> {
+            val arguments = it.toRoute<Route.NoteDetails>()
+
+            NoteDetailsRoot(
+                id = arguments.id,
                 navigateBack = {
                     navController.navigateUp()
                 }

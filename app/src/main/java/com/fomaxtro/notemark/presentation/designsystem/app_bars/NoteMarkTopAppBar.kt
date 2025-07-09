@@ -2,7 +2,10 @@ package com.fomaxtro.notemark.presentation.designsystem.app_bars
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +23,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
@@ -31,9 +35,16 @@ fun NoteMarkTopAppBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     action: @Composable () -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {}
+    navigationIcon: (@Composable () -> Unit)? = null
 ) {
     val contentPadding = rememberAdaptiveHorizontalPadding()
+
+    val fixedContentPadding = if (navigationIcon != null) {
+        PaddingValues(
+            start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) - 16.dp,
+            end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
+        )
+    } else contentPadding
 
     Surface(
         modifier = modifier,
@@ -44,11 +55,11 @@ fun NoteMarkTopAppBar(
                 .fillMaxWidth()
                 .statusBarsPadding()
                 .padding(NoteMarkTopAppBarDefaults.padding)
-                .padding(contentPadding)
+                .padding(fixedContentPadding)
                 .height(NoteMarkTopAppBarDefaults.height),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            navigationIcon()
+            navigationIcon?.invoke()
             
             CompositionLocalProvider(
                 LocalTextStyle provides MaterialTheme.typography.titleMedium.copy(

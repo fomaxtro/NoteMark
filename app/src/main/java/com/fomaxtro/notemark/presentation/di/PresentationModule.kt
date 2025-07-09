@@ -4,6 +4,7 @@ import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.screen.edit_note.EditNoteViewModel
 import com.fomaxtro.notemark.presentation.screen.landing.LandingViewModel
 import com.fomaxtro.notemark.presentation.screen.login.LoginViewModel
+import com.fomaxtro.notemark.presentation.screen.note_details.NoteDetailsViewModel
 import com.fomaxtro.notemark.presentation.screen.note_list.NoteListViewModel
 import com.fomaxtro.notemark.presentation.screen.registration.RegistrationViewModel
 import com.fomaxtro.notemark.presentation.screen.settings.SettingsViewModel
@@ -35,4 +36,10 @@ val presentationModule = module {
         )
     }
     viewModelOf(::SettingsViewModel)
+    viewModel<NoteDetailsViewModel> { (id: String) ->
+        NoteDetailsViewModel(
+            id = id,
+            noteRepository = get()
+        )
+    }
 }

@@ -15,4 +15,6 @@ sealed interface Route {
     data object Registration : Route
     @Serializable
     data object Settings : Route
+    @Serializable
+    data class NoteDetails(val id: String) : Route
 }

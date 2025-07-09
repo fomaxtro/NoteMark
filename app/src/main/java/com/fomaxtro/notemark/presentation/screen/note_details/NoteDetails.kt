@@ -37,19 +37,24 @@ import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Composable
 fun NoteDetailsRoot(
-    viewModel: NoteDetailsViewModel = koinViewModel()
+    id: String,
+    navigateBack: () -> Unit,
+    viewModel: NoteDetailsViewModel = koinViewModel {
+        parametersOf(id)
+    }
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            else -> Unit
+            NoteDetailsEvent.NavigateBack -> navigateBack()
         }
     }
 
@@ -77,7 +82,9 @@ private fun NoteDetailsScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = {}
+                        onClick = {
+                            onAction(NoteDetailsAction.OnNavigateBackClick)
+                        }
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.chevron_left),

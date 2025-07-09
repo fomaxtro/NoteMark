@@ -53,7 +53,7 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun EditNoteRoot(
-    id: String?,
+    id: String,
     navigateBack: () -> Unit,
     viewModel: EditNoteViewModel = koinViewModel {
         parametersOf(id)

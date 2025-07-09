@@ -46,8 +46,9 @@ import java.util.UUID
 
 @Composable
 fun NoteListRoot(
-    navigateToEditNote: (id: UUID) -> Unit,
+    navigateToEditNote: (id: String) -> Unit,
     navigateToSettings: () -> Unit,
+    navigateToNoteDetails: (id: String) -> Unit,
     viewModel: NoteListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -64,6 +65,7 @@ fun NoteListRoot(
                 ).show()
             }
             NoteListEvent.NavigateToSettings -> navigateToSettings()
+            is NoteListEvent.NavigateToNoteDetails -> navigateToNoteDetails(event.id)
         }
     }
 
