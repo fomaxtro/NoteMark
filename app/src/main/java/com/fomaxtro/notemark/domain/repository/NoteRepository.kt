@@ -9,7 +9,7 @@ import java.util.UUID
 interface NoteRepository {
     suspend fun create(note: Note): EmptyResult<DataError>
     suspend fun update(note: Note): EmptyResult<DataError>
-    suspend fun findById(id: UUID): Note
+    fun findById(id: UUID): Flow<Note>
     suspend fun delete(noteId: UUID)
     fun getRecentNotes(): Flow<List<Note>>
 }

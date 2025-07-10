@@ -156,6 +156,11 @@ fun NavigationRoot(
                 id = arguments.id,
                 navigateBack = {
                     navController.navigateUp()
+                },
+                navigateToEditNote = { id ->
+                    navController.navigate(Route.EditNote(id)) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }

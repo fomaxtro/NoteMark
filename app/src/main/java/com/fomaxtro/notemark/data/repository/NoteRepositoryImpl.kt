@@ -14,6 +14,7 @@ import com.fomaxtro.notemark.domain.util.EmptyResult
 import com.fomaxtro.notemark.domain.util.mapError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -47,17 +48,16 @@ class NoteRepositoryImpl(
         return result.mapError { it.toDataError() }
     }
 
-    override suspend fun findById(id: UUID): Note {
+    override fun findById(id: UUID): Flow<Note> {
         return noteDao
             .findById(id.toString())
-            .toNote()
+            .map { it.toNote() }
     }
 
     override suspend fun delete(noteId: UUID) {
         noteDao.findById(noteId.toString())
-            .also { note ->
-                noteDao.delete(note)
-            }
+            .first()
+            .also { noteDao.delete(it) }
 
         applicationScope.launch {
             noteDataSource.delete(noteId.toString())

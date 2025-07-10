@@ -46,6 +46,7 @@ import java.util.UUID
 fun NoteDetailsRoot(
     id: String,
     navigateBack: () -> Unit,
+    navigateToEditNote: (String) -> Unit,
     viewModel: NoteDetailsViewModel = koinViewModel {
         parametersOf(id)
     }
@@ -55,6 +56,7 @@ fun NoteDetailsRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             NoteDetailsEvent.NavigateBack -> navigateBack()
+            is NoteDetailsEvent.NavigateToEditNote -> navigateToEditNote(id)
         }
     }
 
@@ -99,9 +101,10 @@ private fun NoteDetailsScreen(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Row {
-                    NoteMarkIconToggleButton(
-                        checked = false,
-                        onCheckedChange = {},
+                    IconButton(
+                        onClick = {
+                            onAction(NoteDetailsAction.OnEditNoteClick)
+                        }
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.edit),

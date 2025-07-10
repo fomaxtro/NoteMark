@@ -13,7 +13,7 @@ interface NoteDao {
     suspend fun upsert(note: NoteEntity)
 
     @Query("SELECT * FROM notes WHERE id = :id")
-    suspend fun findById(id: String): NoteEntity
+    fun findById(id: String): Flow<NoteEntity>
 
     @Delete
     suspend fun delete(note: NoteEntity)

@@ -7,6 +7,8 @@ import com.fomaxtro.notemark.presentation.mapper.toNoteDetailUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -21,13 +23,7 @@ class NoteDetailsViewModel(
     private val _state = MutableStateFlow(NoteDetailsState())
     val state = _state
         .onStart {
-            val note = noteRepository.findById(UUID.fromString(id))
-
-            _state.update {
-                it.copy(
-                    note = note.toNoteDetailUi()
-                )
-            }
+            loadNote(UUID.fromString(id))
         }
         .stateIn(
             viewModelScope,
@@ -38,9 +34,29 @@ class NoteDetailsViewModel(
     private val eventChannel = Channel<NoteDetailsEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    private fun loadNote(id: UUID) {
+        noteRepository
+            .findById(id)
+            .onEach { note ->
+                _state.update {
+                    it.copy(
+                        note = note.toNoteDetailUi()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun onAction(action: NoteDetailsAction) {
         when (action) {
             NoteDetailsAction.OnNavigateBackClick -> onNavigateBackClick()
+            NoteDetailsAction.OnEditNoteClick -> onEditNoteClick()
+        }
+    }
+
+    private fun onEditNoteClick() {
+        viewModelScope.launch {
+            eventChannel.send(NoteDetailsEvent.NavigateToEditNote)
         }
     }
 

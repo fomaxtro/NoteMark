@@ -11,6 +11,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -51,7 +52,9 @@ class EditNoteViewModel(
     private lateinit var loadedNote: Note
 
     private suspend fun loadNote(id: String) {
-        loadedNote = noteRepository.findById(UUID.fromString(id))
+        loadedNote = noteRepository
+            .findById(UUID.fromString(id))
+            .first()
 
         _state.update {
             it.copy(
