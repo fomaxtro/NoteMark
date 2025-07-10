@@ -127,6 +127,7 @@ class NoteDetailsViewModel(
 
     private fun onEditNoteClick() {
         viewModelScope.launch {
+            eventChannel.send(NoteDetailsEvent.SetUnspecifiedOrientation)
             eventChannel.send(NoteDetailsEvent.NavigateToEditNote)
         }
     }
