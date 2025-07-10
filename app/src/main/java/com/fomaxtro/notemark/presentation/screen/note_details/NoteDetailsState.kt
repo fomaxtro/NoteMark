@@ -4,5 +4,6 @@ import com.fomaxtro.notemark.presentation.model.NoteDetailUi
 
 data class NoteDetailsState(
     val note: NoteDetailUi? = null,
-    val readerMode: Boolean = false
+    val readerMode: Boolean = false,
+    val showControls: Boolean = true
 )

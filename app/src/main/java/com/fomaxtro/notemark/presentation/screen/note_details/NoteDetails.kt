@@ -1,5 +1,15 @@
 package com.fomaxtro.notemark.presentation.screen.note_details
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,9 +26,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,11 +66,18 @@ fun NoteDetailsRoot(
     }
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             NoteDetailsEvent.NavigateBack -> navigateBack()
             is NoteDetailsEvent.NavigateToEditNote -> navigateToEditNote(id)
+            NoteDetailsEvent.SetLandscapeOrientation -> {
+                (context as Activity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+            NoteDetailsEvent.SetUnspecifiedOrientation -> {
+                (context as Activity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
         }
     }
 
@@ -66,69 +87,116 @@ fun NoteDetailsRoot(
     )
 }
 
+@Stable
+private fun fadeInSlow(): EnterTransition = fadeIn(
+    animationSpec = spring(
+        stiffness = Spring.StiffnessLow
+    )
+)
+
+@Stable
+private fun fadeOutSlow(): ExitTransition = fadeOut(
+    animationSpec = spring(
+        stiffness = Spring.StiffnessLow
+    )
+)
+
 @Composable
 private fun NoteDetailsScreen(
     onAction: (NoteDetailsAction) -> Unit = {},
     state: NoteDetailsState
 ) {
     val deviceOrientation = rememberDeviceOrientation()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(scrollState.isScrollInProgress) {
+        if (scrollState.isScrollInProgress) {
+            onAction(NoteDetailsAction.OnContentScroll)
+        }
+    }
 
     NoteMarkScaffold(
         topAppBar = {
             NoteMarkTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.all_notes),
-                        style = MaterialTheme.typography.titleSmall
-                    )
+                    AnimatedVisibility(
+                        visible = state.showControls,
+                        enter = fadeInSlow(),
+                        exit = fadeOutSlow()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.all_notes),
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onAction(NoteDetailsAction.OnNavigateBackClick)
-                        }
+                    AnimatedVisibility(
+                        visible = state.showControls,
+                        enter = fadeInSlow(),
+                        exit = fadeOutSlow()
                     ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.chevron_left),
-                            contentDescription = stringResource(R.string.navigate_back)
-                        )
+                        IconButton(
+                            onClick = {
+                                onAction(NoteDetailsAction.OnNavigateBackClick)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.chevron_left),
+                                contentDescription = stringResource(R.string.navigate_back)
+                            )
+                        }
                     }
                 }
             )
         },
         floatingActionButton = {
-            Surface(
-                shape = RoundedCornerShape(16.dp)
+            AnimatedVisibility(
+                visible = state.showControls,
+                enter = fadeInSlow(),
+                exit = fadeOutSlow()
             ) {
-                Row {
-                    IconButton(
-                        onClick = {
-                            onAction(NoteDetailsAction.OnEditNoteClick)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.edit),
-                            contentDescription = stringResource(R.string.edit)
-                        )
-                    }
-
-                    NoteMarkIconToggleButton(
-                        checked = state.readerMode,
-                        onCheckedChange = {}
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.book_open),
-                            contentDescription = if (state.readerMode) {
-                                stringResource(R.string.view_mode)
-                            } else {
-                                stringResource(R.string.reader_mode)
+                Surface(
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Row {
+                        IconButton(
+                            onClick = {
+                                onAction(NoteDetailsAction.OnEditNoteClick)
                             }
-                        )
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.edit),
+                                contentDescription = stringResource(R.string.edit)
+                            )
+                        }
+
+                        NoteMarkIconToggleButton(
+                            checked = state.readerMode,
+                            onCheckedChange = {
+                                onAction(NoteDetailsAction.OnReaderModeClick(it))
+                            }
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.book_open),
+                                contentDescription = if (state.readerMode) {
+                                    stringResource(R.string.view_mode)
+                                } else {
+                                    stringResource(R.string.reader_mode)
+                                }
+                            )
+                        }
                     }
                 }
             }
         },
-        floatingActionButtonPosition = NoteMarkFabPosition.CENTER
+        floatingActionButtonPosition = NoteMarkFabPosition.CENTER,
+        modifier = Modifier
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    onAction(NoteDetailsAction.OnTapScreen)
+                }
+            }
     ) { innerPadding ->
         if (state.note != null) {
             Column(
@@ -138,7 +206,7 @@ private fun NoteDetailsScreen(
                         if (deviceOrientation == DeviceOrientation.PHONE_TABLET_LANDSCAPE) {
                             Modifier
                                 .width(540.dp)
-                                .verticalScroll(rememberScrollState())
+                                .verticalScroll(scrollState)
                         } else {
                             Modifier
                                 .fillMaxWidth()

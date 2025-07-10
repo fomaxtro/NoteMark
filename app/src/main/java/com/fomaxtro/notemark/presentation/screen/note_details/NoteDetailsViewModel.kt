@@ -4,9 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.domain.repository.NoteRepository
 import com.fomaxtro.notemark.presentation.mapper.toNoteDetailUi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -24,6 +31,7 @@ class NoteDetailsViewModel(
     val state = _state
         .onStart {
             loadNote(UUID.fromString(id))
+            toggleControls()
         }
         .stateIn(
             viewModelScope,
@@ -33,6 +41,30 @@ class NoteDetailsViewModel(
 
     private val eventChannel = Channel<NoteDetailsEvent>()
     val events = eventChannel.receiveAsFlow()
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private fun toggleControls() {
+        state
+            .distinctUntilChangedBy { it.readerMode }
+            .flatMapLatest {
+                if (it.readerMode) {
+                    state
+                        .distinctUntilChangedBy { it.showControls }
+                        .filter { it.showControls }
+                        .debounce(5000L)
+                        .onEach {
+                            _state.update {
+                                it.copy(
+                                    showControls = false
+                                )
+                            }
+                        }
+                } else {
+                    emptyFlow()
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
     private fun loadNote(id: UUID) {
         noteRepository
@@ -51,6 +83,45 @@ class NoteDetailsViewModel(
         when (action) {
             NoteDetailsAction.OnNavigateBackClick -> onNavigateBackClick()
             NoteDetailsAction.OnEditNoteClick -> onEditNoteClick()
+            is NoteDetailsAction.OnReaderModeClick -> onReaderModeClick(action.readerMode)
+            NoteDetailsAction.OnTapScreen -> onTapScreen()
+            NoteDetailsAction.OnContentScroll -> onContentScroll()
+        }
+    }
+
+    private fun onContentScroll() {
+        if (state.value.readerMode) {
+            _state.update {
+                it.copy(
+                    showControls = false
+                )
+            }
+        }
+    }
+
+    private fun onTapScreen() {
+        if (state.value.readerMode) {
+            _state.update {
+                it.copy(
+                    showControls = !it.showControls
+                )
+            }
+        }
+    }
+
+    private fun onReaderModeClick(readerMode: Boolean) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    readerMode = readerMode
+                )
+            }
+
+            if (readerMode) {
+                eventChannel.send(NoteDetailsEvent.SetLandscapeOrientation)
+            } else {
+                eventChannel.send(NoteDetailsEvent.SetUnspecifiedOrientation)
+            }
         }
     }
 
@@ -62,6 +133,7 @@ class NoteDetailsViewModel(
 
     private fun onNavigateBackClick() {
         viewModelScope.launch {
+            eventChannel.send(NoteDetailsEvent.SetUnspecifiedOrientation)
             eventChannel.send(NoteDetailsEvent.NavigateBack)
         }
     }
