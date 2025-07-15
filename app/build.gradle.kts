@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.kotlinx.serialization.json)
 

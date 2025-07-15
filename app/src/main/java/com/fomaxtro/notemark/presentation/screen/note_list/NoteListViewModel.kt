@@ -2,6 +2,7 @@ package com.fomaxtro.notemark.presentation.screen.note_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.model.Note
 import com.fomaxtro.notemark.domain.repository.NoteRepository
 import com.fomaxtro.notemark.domain.repository.UserRepository
@@ -12,6 +13,7 @@ import com.fomaxtro.notemark.presentation.model.NoteUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -26,13 +28,15 @@ import java.util.UUID
 class NoteListViewModel(
     private val defaultTitle: String,
     private val noteRepository: NoteRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val connectivity: Connectivity
 ) : ViewModel() {
     private val _state = MutableStateFlow(NoteListState())
     val state = _state
         .onStart {
             getUsername()
-            loadNotes()
+            observeInternetConnection()
+            observeNotes()
         }
         .stateIn(
             viewModelScope,
@@ -57,7 +61,7 @@ class NoteListViewModel(
         }
     }
 
-    private fun loadNotes() {
+    private fun observeNotes() {
         noteRepository
             .getRecentNotes()
             .map { notes ->
@@ -67,6 +71,20 @@ class NoteListViewModel(
                 _state.update {
                     it.copy(
                         notes = notes
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeInternetConnection() {
+        connectivity
+            .hasInternetConnection()
+            .distinctUntilChanged()
+            .onEach { hasInternetConnection ->
+                _state.update {
+                    it.copy(
+                        hasInternet = hasInternetConnection
                     )
                 }
             }

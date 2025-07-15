@@ -136,7 +136,8 @@ private fun NoteListScreen(
                         )
                     }
                     Avatar(name = state.username)
-                }
+                },
+                hasInternet = state.hasInternet
             )
         },
         floatingActionButton = {

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
+import com.fomaxtro.notemark.data.conectivity.AndroidConnectivity
 import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.database.dao.NoteDao
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
@@ -21,6 +22,7 @@ import com.fomaxtro.notemark.data.repository.AuthRepositoryImpl
 import com.fomaxtro.notemark.data.repository.NoteRepositoryImpl
 import com.fomaxtro.notemark.data.repository.UserRepositoryImpl
 import com.fomaxtro.notemark.data.validator.AndroidPatternMatching
+import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.repository.NoteRepository
 import com.fomaxtro.notemark.domain.repository.UserRepository
@@ -72,4 +74,6 @@ val dataModule = module {
         ).build()
     }
     single<NoteDao> { get<NoteMarkDatabase>().noteDao() }
+
+    singleOf(::AndroidConnectivity).bind<Connectivity>()
 }
