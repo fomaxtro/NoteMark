@@ -56,4 +56,8 @@
     <string name="edit">Edit</string>
     <string name="view_mode">View mode</string>
     <string name="reader_mode">Reader mode</string>
+    <string name="sync_data">Sync Data</string>
+    <string name="last_sync">Last sync: %s</string>
+    <string name="manual_only">Manual only</string>
+    <string name="sync_interval">Sync interval</string>
 </resources>

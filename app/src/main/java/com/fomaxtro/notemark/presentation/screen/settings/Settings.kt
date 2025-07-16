@@ -1,20 +1,20 @@
 package com.fomaxtro.notemark.presentation.screen.settings
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -22,12 +22,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
 import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
+import com.fomaxtro.notemark.presentation.screen.settings.components.SettingActionButton
+import com.fomaxtro.notemark.presentation.screen.settings.components.SettingListItem
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
 import org.koin.androidx.compose.koinViewModel
@@ -101,26 +102,35 @@ private fun SettingsScreen(
                     .padding(innerPadding)
                     .padding(horizontalPadding)
             ) {
-                TextButton(
-                    onClick = {
-                        onAction(SettingsAction.OnLogoutClick)
-                    },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.log_out),
-                        contentDescription = stringResource(R.string.log_out)
-                    )
+                SettingListItem(
+                    icon = Icons.Default.AccessTime,
+                    title = stringResource(R.string.sync_interval),
+                    onClick = {},
+                    action = {
+                        SettingActionButton(
+                            text = stringResource(R.string.manual_only),
+                            onClick = {}
+                        )
+                    }
+                )
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                HorizontalDivider()
 
-                    Text(
-                        text = stringResource(R.string.log_out),
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                }
+                SettingListItem(
+                    icon = Icons.Default.Sync,
+                    title = stringResource(R.string.sync_data),
+                    subtitle = stringResource(R.string.last_sync, "12 min ago"),
+                    onClick = {}
+                )
+
+                HorizontalDivider()
+
+                SettingListItem(
+                    icon = ImageVector.vectorResource(R.drawable.log_out),
+                    title = stringResource(R.string.log_out),
+                    onClick = {},
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
