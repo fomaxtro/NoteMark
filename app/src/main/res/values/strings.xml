@@ -60,4 +60,7 @@
     <string name="last_sync">Last sync: %s</string>
     <string name="manual_only">Manual only</string>
     <string name="sync_interval">Sync interval</string>
+    <string name="fifteen_minutes">15 minutes</string>
+    <string name="thirty_minutes">30 minutes</string>
+    <string name="one_hour">1 hour</string>
 </resources>

@@ -3,11 +3,14 @@ package com.fomaxtro.notemark.presentation.screen.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -22,12 +25,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
 import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.settings.components.SettingActionButton
+import com.fomaxtro.notemark.presentation.screen.settings.components.SettingDropdownMenuItem
 import com.fomaxtro.notemark.presentation.screen.settings.components.SettingListItem
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
@@ -111,6 +117,43 @@ private fun SettingsScreen(
                             text = stringResource(R.string.manual_only),
                             onClick = {}
                         )
+
+                        DropdownMenu(
+                            expanded = false,
+                            onDismissRequest = {},
+                            shape = RoundedCornerShape(16.dp),
+                            offset = DpOffset(
+                                x = 0.dp,
+                                y = 16.dp
+                            ),
+                            modifier = Modifier
+                                .width(190.dp),
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                        ) {
+                            SettingDropdownMenuItem(
+                                text = stringResource(R.string.manual_only),
+                                onClick = {},
+                                isSelected = true
+                            )
+
+                            SettingDropdownMenuItem(
+                                text = stringResource(R.string.fifteen_minutes),
+                                onClick = {},
+                                isSelected = false
+                            )
+
+                            SettingDropdownMenuItem(
+                                text = stringResource(R.string.thirty_minutes),
+                                onClick = {},
+                                isSelected = false
+                            )
+
+                            SettingDropdownMenuItem(
+                                text = stringResource(R.string.one_hour),
+                                onClick = {},
+                                isSelected = false
+                            )
+                        }
                     }
                 )
 
