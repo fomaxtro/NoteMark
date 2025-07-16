@@ -1,6 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.note_list
 
-import com.fomaxtro.notemark.presentation.model.NoteUi
+import com.fomaxtro.notemark.presentation.screen.note_list.model.NoteUi
 
 sealed interface NoteListAction {
     data object OnNewNoteClick : NoteListAction

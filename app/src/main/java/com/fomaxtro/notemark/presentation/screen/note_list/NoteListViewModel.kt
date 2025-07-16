@@ -9,7 +9,7 @@ import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.presentation.mapper.toNoteUi
 import com.fomaxtro.notemark.presentation.mapper.toUiText
-import com.fomaxtro.notemark.presentation.model.NoteUi
+import com.fomaxtro.notemark.presentation.screen.note_list.model.NoteUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

@@ -1,6 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.note_details
 
-import com.fomaxtro.notemark.presentation.model.NoteDetailUi
+import com.fomaxtro.notemark.presentation.screen.note_details.model.NoteDetailUi
 
 data class NoteDetailsState(
     val note: NoteDetailUi? = null,

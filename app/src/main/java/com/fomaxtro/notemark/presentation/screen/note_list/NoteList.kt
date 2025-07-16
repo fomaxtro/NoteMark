@@ -34,9 +34,9 @@ import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBa
 import com.fomaxtro.notemark.presentation.designsystem.buttons.NoteMarkFloatingActionButton
 import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
-import com.fomaxtro.notemark.presentation.model.NoteUi
 import com.fomaxtro.notemark.presentation.screen.note_list.components.Avatar
 import com.fomaxtro.notemark.presentation.screen.note_list.components.NoteCardItem
+import com.fomaxtro.notemark.presentation.screen.note_list.model.NoteUi
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding

@@ -2,8 +2,8 @@ package com.fomaxtro.notemark.presentation.mapper
 
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.domain.model.Note
-import com.fomaxtro.notemark.presentation.model.NoteDetailUi
-import com.fomaxtro.notemark.presentation.model.NoteUi
+import com.fomaxtro.notemark.presentation.screen.note_details.model.NoteDetailUi
+import com.fomaxtro.notemark.presentation.screen.note_list.model.NoteUi
 import com.fomaxtro.notemark.presentation.ui.UiText
 import com.fomaxtro.notemark.presentation.util.toScopedDate
 import java.time.Instant
