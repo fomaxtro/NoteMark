@@ -20,7 +20,6 @@ data class RegistrationState(
     val passwordHint: UiText? = null,
     val isPasswordError: Boolean = false,
     val passwordError: UiText? = null,
-    val showPassword: Boolean = false,
 
     val passwordConfirmation: TextFieldState = TextFieldState(),
     val isFocusedPasswordConfirmation: Boolean = false,

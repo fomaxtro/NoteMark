@@ -155,10 +155,6 @@ private fun RegistrationScreen(
                     state = state.password,
                     label = stringResource(R.string.password),
                     placeholder = stringResource(R.string.password),
-                    showPassword = state.showPassword,
-                    onPasswordVisibilityChange = {
-                        onAction(RegistrationAction.OnPasswordVisibilityChange(it))
-                    },
                     supportingText = if (state.isPasswordError) {
                         state.passwordError?.asString()
                     } else {
@@ -177,10 +173,6 @@ private fun RegistrationScreen(
                     state = state.passwordConfirmation,
                     label = stringResource(R.string.repeat_password),
                     placeholder = stringResource(R.string.password),
-                    showPassword = state.showPasswordConfirmation,
-                    onPasswordVisibilityChange = {
-                        onAction(RegistrationAction.OnPasswordConfirmationVisibilityChange(it))
-                    },
                     isError = state.isPasswordConfirmationError,
                     supportingText = if (state.isPasswordConfirmationError) {
                         state.passwordConfirmationError?.asString()

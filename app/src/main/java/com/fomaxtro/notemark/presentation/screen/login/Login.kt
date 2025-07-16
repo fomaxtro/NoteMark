@@ -123,11 +123,7 @@ private fun LoginScreen(
                 NoteMarkPasswordTextField(
                     state = state.password,
                     label = stringResource(R.string.password),
-                    placeholder = stringResource(R.string.password),
-                    showPassword = state.isPasswordVisible,
-                    onPasswordVisibilityChange = {
-                        onAction(LoginAction.OnPasswordVisibilityChange(it))
-                    }
+                    placeholder = stringResource(R.string.password)
                 )
 
                 NoteMarkButton(

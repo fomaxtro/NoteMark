@@ -260,9 +260,6 @@ class RegistrationViewModel(
             is RegistrationAction.OnEmailChange -> onEmailChange(action.email)
             is RegistrationAction.OnEmailFocusChange -> onEmailFocusChange(action.isFocused)
             is RegistrationAction.OnPasswordFocusChange -> onPasswordFocusChange(action.isFocused)
-            is RegistrationAction.OnPasswordVisibilityChange -> {
-                onPasswordVisibilityChange(action.isVisible)
-            }
 
             is RegistrationAction.OnPasswordConfirmationFocusChange -> {
                 onPasswordConfirmationFocusChange(action.isFocused)
@@ -334,14 +331,6 @@ class RegistrationViewModel(
         _state.update {
             it.copy(
                 isFocusedPasswordConfirmation = focused
-            )
-        }
-    }
-
-    private fun onPasswordVisibilityChange(visible: Boolean) {
-        _state.update {
-            it.copy(
-                showPassword = visible
             )
         }
     }

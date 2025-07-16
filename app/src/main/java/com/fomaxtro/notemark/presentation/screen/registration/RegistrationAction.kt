@@ -5,7 +5,6 @@ sealed interface RegistrationAction {
     data class OnUsernameFocusChange(val isFocused: Boolean) : RegistrationAction
     data class OnEmailChange(val email: String) : RegistrationAction
     data class OnEmailFocusChange(val isFocused: Boolean) : RegistrationAction
-    data class OnPasswordVisibilityChange(val isVisible: Boolean) : RegistrationAction
     data class OnPasswordFocusChange(val isFocused: Boolean) : RegistrationAction
     data class OnPasswordConfirmationVisibilityChange(val isVisible: Boolean) : RegistrationAction
     data class OnPasswordConfirmationFocusChange(val isFocused: Boolean) : RegistrationAction

@@ -62,7 +62,6 @@ class LoginViewModel(
             LoginAction.OnDontHaveAccountClick -> onDontHaveAccountClick()
             is LoginAction.OnEmailChange -> onEmailChange(action.email)
             LoginAction.OnLogInClick -> onLogInClick()
-            is LoginAction.OnPasswordVisibilityChange -> onPasswordVisibilityChange(action.isVisible)
         }
     }
 
@@ -99,14 +98,6 @@ class LoginViewModel(
                     eventChannel.send(LoginEvent.NavigateToNoteList)
                 }
             }
-        }
-    }
-
-    private fun onPasswordVisibilityChange(visible: Boolean) {
-        _state.update {
-            it.copy(
-                isPasswordVisible = visible
-            )
         }
     }
 
