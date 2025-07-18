@@ -20,6 +20,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -65,6 +68,9 @@ private fun SettingsScreen(
     state: SettingsState
 ) {
     val horizontalPadding = rememberAdaptiveHorizontalPadding()
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
 
     if (state.isLoggingOut) {
         Surface(
@@ -115,12 +121,16 @@ private fun SettingsScreen(
                     action = {
                         SettingActionButton(
                             text = stringResource(R.string.manual_only),
-                            onClick = {}
+                            onClick = {
+                                isExpanded = true
+                            }
                         )
 
                         DropdownMenu(
-                            expanded = false,
-                            onDismissRequest = {},
+                            expanded = isExpanded,
+                            onDismissRequest = {
+                                isExpanded = false
+                            },
                             shape = RoundedCornerShape(16.dp),
                             offset = DpOffset(
                                 x = 0.dp,
@@ -132,25 +142,33 @@ private fun SettingsScreen(
                         ) {
                             SettingDropdownMenuItem(
                                 text = stringResource(R.string.manual_only),
-                                onClick = {},
+                                onClick = {
+                                    isExpanded = false
+                                },
                                 isSelected = true
                             )
 
                             SettingDropdownMenuItem(
                                 text = stringResource(R.string.fifteen_minutes),
-                                onClick = {},
+                                onClick = {
+                                    isExpanded = false
+                                },
                                 isSelected = false
                             )
 
                             SettingDropdownMenuItem(
                                 text = stringResource(R.string.thirty_minutes),
-                                onClick = {},
+                                onClick = {
+                                    isExpanded = false
+                                },
                                 isSelected = false
                             )
 
                             SettingDropdownMenuItem(
                                 text = stringResource(R.string.one_hour),
-                                onClick = {},
+                                onClick = {
+                                    isExpanded = false
+                                },
                                 isSelected = false
                             )
                         }
@@ -171,7 +189,9 @@ private fun SettingsScreen(
                 SettingListItem(
                     icon = ImageVector.vectorResource(R.drawable.log_out),
                     title = stringResource(R.string.log_out),
-                    onClick = {},
+                    onClick = {
+                        onAction(SettingsAction.OnLogoutClick)
+                    },
                     color = MaterialTheme.colorScheme.error
                 )
             }
