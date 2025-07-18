@@ -112,17 +112,17 @@ private fun RegistrationScreen(
                     },
                     label = stringResource(R.string.username),
                     placeholder = stringResource(R.string.username_placeholder),
-                    supportingText = if (state.isUsernameError) {
+                    supportingText = if (state.isUsernameFocused) {
+                        stringResource(R.string.username_hint)
+                    } else if (state.isUsernameError) {
                         state.usernameError?.asString()
                     } else {
-                        state.usernameHint?.asString()
+                        null
                     },
                     isError = state.isUsernameError,
                     modifier = Modifier
                         .onFocusChanged {
-                            onAction(RegistrationAction.OnUsernameFocusChange(
-                                isFocused = it.isFocused
-                            ))
+                            onAction(RegistrationAction.OnUsernameFocusChange(it.isFocused))
                         },
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next
@@ -142,9 +142,7 @@ private fun RegistrationScreen(
                     } else null,
                     modifier = Modifier
                         .onFocusChanged {
-                            onAction(RegistrationAction.OnEmailFocusChange(
-                                isFocused = it.isFocused
-                            ))
+                            onAction(RegistrationAction.OnEmailFocusChange(it.isFocused))
                         },
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next
@@ -155,17 +153,17 @@ private fun RegistrationScreen(
                     state = state.password,
                     label = stringResource(R.string.password),
                     placeholder = stringResource(R.string.password),
-                    supportingText = if (state.isPasswordError) {
+                    supportingText = if (state.isPasswordFocused) {
+                        stringResource(R.string.password_hint)
+                    } else if (state.isPasswordError) {
                         state.passwordError?.asString()
                     } else {
-                        state.passwordHint?.asString()
+                        null
                     },
                     isError = state.isPasswordError,
                     modifier = Modifier
                         .onFocusChanged {
-                            onAction(RegistrationAction.OnPasswordFocusChange(
-                                isFocused = it.isFocused
-                            ))
+                            onAction(RegistrationAction.OnPasswordFocusChange(it.isFocused))
                         }
                 )
 
@@ -179,9 +177,7 @@ private fun RegistrationScreen(
                     } else null,
                     modifier = Modifier
                         .onFocusChanged {
-                            onAction(RegistrationAction.OnPasswordConfirmationFocusChange(
-                                isFocused = it.isFocused
-                            ))
+                            onAction(RegistrationAction.OnPasswordConfirmationFocusChange(it.isFocused))
                         }
                 )
 

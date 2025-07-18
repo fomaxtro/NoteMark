@@ -3,18 +3,16 @@ package com.fomaxtro.notemark.presentation.screen.registration
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.util.Result
-import com.fomaxtro.notemark.domain.util.ValidationResult
 import com.fomaxtro.notemark.domain.validator.RegistrationDataValidator
 import com.fomaxtro.notemark.presentation.mapper.toUiText
-import com.fomaxtro.notemark.presentation.ui.UiText
+import com.fomaxtro.notemark.presentation.ui.createFieldValidationFlow
+import com.fomaxtro.notemark.presentation.ui.createIsErrorFlow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -25,17 +23,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel(
-    private val registrationDataValidator: RegistrationDataValidator,
+    private val validator: RegistrationDataValidator,
     private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegistrationState())
     val state = _state
         .onStart {
-            startUsernameEvents()
-            startEmailEvents()
-            startPasswordEvents()
-            startPasswordConfirmationEvents()
-            startRegisterEvents()
+            observeUsername()
+            observeEmail()
+            observePassword()
+            observePasswordConfirmation()
+            observeFields()
         }
         .stateIn(
             viewModelScope,
@@ -46,201 +44,138 @@ class RegistrationViewModel(
     private val eventChannel = Channel<RegistrationEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val validateUsername = state
-        .distinctUntilChangedBy { it.username }
-        .map { state ->
-            registrationDataValidator.validateUsername(state.username)
-        }
-        .onEach { validationResult ->
-            when (validationResult) {
-                is ValidationResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            usernameError = validationResult.error.toUiText()
-                        )
-                    }
-                }
-
-                ValidationResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            usernameError = null
-                        )
-                    }
-                }
+    private val hasUsernameBeenFocused = MutableStateFlow(false)
+    private val isUsernameValid = createFieldValidationFlow(
+        shouldValidate = hasUsernameBeenFocused,
+        value = state.map { it.username },
+        validator = { validator.validateUsername(it) },
+        onError = { error ->
+            _state.update {
+                it.copy(
+                    usernameError = error?.toUiText()
+                )
             }
         }
-        .map { validationResult ->
-            validationResult is ValidationResult.Success
-        }
+    )
 
-    private val validateEmail = state
-        .distinctUntilChangedBy { it.email }
-        .map { state ->
-            registrationDataValidator.validateEmail(state.email)
-        }
-        .onEach { validationResult ->
-            when (validationResult) {
-                is ValidationResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            emailError = validationResult.error.toUiText(),
-                        )
-                    }
-                }
-
-                ValidationResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            emailError = null,
-                        )
-                    }
-                }
+    private val hasEmailBeenFocused = MutableStateFlow(false)
+    private val isEmailValid = createFieldValidationFlow(
+        shouldValidate = hasEmailBeenFocused,
+        value = state.map { it.email },
+        validator = { validator.validateEmail(it) },
+        onError = { error ->
+            _state.update {
+                it.copy(
+                    emailError = error?.toUiText()
+                )
             }
         }
-        .map { validationResult ->
-            validationResult is ValidationResult.Success
-        }
+    )
 
     private val passwordFlow = snapshotFlow { state.value.password.text.toString() }
+    private val hasPasswordBeenFocused = MutableStateFlow(false)
+    private val isPasswordValid = createFieldValidationFlow(
+        shouldValidate = hasPasswordBeenFocused,
+        value = passwordFlow,
+        validator = { validator.validatePassword(it) },
+        onError = { error ->
+            _state.update {
+                it.copy(
+                    passwordError = error?.toUiText()
+                )
+            }
+        }
+    )
+
     private val passwordConfirmationFlow = snapshotFlow {
         state.value.passwordConfirmation.text.toString()
     }
-
-    private val validatePassword = passwordFlow
-        .map { password ->
-            registrationDataValidator.validatePassword(password)
-        }
-        .onEach { validationResult ->
-            when (validationResult) {
-                is ValidationResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            passwordError = validationResult.error.toUiText(),
-                        )
-                    }
-                }
-
-                ValidationResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            passwordError = null,
-                        )
-                    }
-                }
+    private val hasPasswordConfirmationBeenFocused = MutableStateFlow(false)
+    private val isPasswordConfirmationValid = createFieldValidationFlow(
+        shouldValidate = hasPasswordConfirmationBeenFocused,
+        value = combine(passwordFlow, passwordConfirmationFlow) { password, passwordConfirmation ->
+            password to passwordConfirmation
+        },
+        validator = { validator.validatePasswordConfirmation(it.first, it.second) },
+        onError = { error ->
+            _state.update {
+                it.copy(
+                    passwordConfirmationError = error?.toUiText()
+                )
             }
         }
-        .map { validationResult ->
-            validationResult is ValidationResult.Success
-        }
+    )
 
-    private val validatePasswordConfirmation = combine(
-        passwordFlow,
-        passwordConfirmationFlow
-    ) { password, passwordConfirmation ->
-        registrationDataValidator.validatePasswordConfirmation(
-            password = password,
-            passwordConfirmation = passwordConfirmation
+    private fun observeUsername() {
+        createIsErrorFlow(
+            value = state.map { it.username },
+            isFocused = state.map { it.isUsernameFocused },
+            isValid = isUsernameValid
         )
-    }
-        .onEach { validationResult ->
-            when (validationResult) {
-                is ValidationResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            passwordConfirmationError = validationResult.error.toUiText(),
-                        )
-                    }
-                }
-
-                ValidationResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            passwordConfirmationError = null,
-                        )
-                    }
-                }
-            }
-        }
-        .map { validationResult ->
-            validationResult is ValidationResult.Success
-        }
-
-    private fun startUsernameEvents() {
-        state
-            .distinctUntilChangedBy { it.isFocusedUsername }
-            .combine(validateUsername) { state, isValidUsername ->
+            .onEach { isError ->
                 _state.update {
                     it.copy(
-                        usernameHint = if (state.isFocusedUsername) {
-                            UiText.StringResource(R.string.username_hint)
-                        } else {
-                            null
-                        },
-                        isUsernameError = !state.isFocusedUsername
-                                && state.username.isNotEmpty()
-                                && !isValidUsername
+                        isUsernameError = isError
                     )
                 }
             }
             .launchIn(viewModelScope)
     }
 
-    private fun startEmailEvents() {
-        state
-            .distinctUntilChangedBy { it.isFocusedEmail }
-            .combine(validateEmail) { state, isValidEmail ->
+    private fun observeEmail() {
+        createIsErrorFlow(
+            value = state.map { it.email },
+            isFocused = state.map { it.isEmailFocused },
+            isValid = isEmailValid
+        )
+            .onEach { isError ->
                 _state.update {
                     it.copy(
-                        isEmailError = !state.isFocusedEmail
-                                && state.email.isNotEmpty()
-                                && !isValidEmail
+                        isEmailError = isError
                     )
                 }
             }
             .launchIn(viewModelScope)
     }
 
-    private fun startPasswordEvents() {
-        state
-            .distinctUntilChangedBy { it.isFocusedPassword }
-            .combine(validatePassword) { state, isValidPassword ->
+    private fun observePassword() {
+        createIsErrorFlow(
+            value = passwordFlow,
+            isFocused = state.map { it.isPasswordFocused },
+            isValid = isPasswordValid
+        )
+            .onEach { isError ->
                 _state.update {
                     it.copy(
-                        passwordHint = if (state.isFocusedPassword) {
-                            UiText.StringResource(R.string.password_hint)
-                        } else null,
-                        isPasswordError = !state.isFocusedPassword
-                                && state.password.text.isNotEmpty()
-                                && !isValidPassword,
+                        isPasswordError = isError
                     )
                 }
             }
             .launchIn(viewModelScope)
     }
 
-    private fun startPasswordConfirmationEvents() {
-        state
-            .distinctUntilChangedBy { it.isFocusedPasswordConfirmation }
-            .combine(validatePasswordConfirmation) { state, isValidPasswordConfirmation ->
+    private fun observePasswordConfirmation() {
+        createIsErrorFlow(
+            value = passwordConfirmationFlow,
+            isFocused = state.map { it.isPasswordConfirmationFocused },
+            isValid = isPasswordConfirmationValid
+        )
+            .onEach { isError ->
                 _state.update {
                     it.copy(
-                        isPasswordConfirmationError = !state.isFocusedPasswordConfirmation
-                                && state.passwordConfirmation.text.isNotEmpty()
-                                && !isValidPasswordConfirmation,
+                        isPasswordConfirmationError = isError
                     )
                 }
-
             }
             .launchIn(viewModelScope)
     }
 
-    private fun startRegisterEvents() {
+    private fun observeFields() {
         combine(
-            validateUsername,
-            validateEmail,
-            validatePassword,
-            validatePasswordConfirmation
+            isUsernameValid,
+            isEmailValid,
+            isPasswordValid,
+            isPasswordConfirmationValid
         ) { isValidUsername, isValidEmail, isValidPassword, isValidPasswordConfirmation ->
             _state.update {
                 it.copy(
@@ -263,10 +198,6 @@ class RegistrationViewModel(
 
             is RegistrationAction.OnPasswordConfirmationFocusChange -> {
                 onPasswordConfirmationFocusChange(action.isFocused)
-            }
-
-            is RegistrationAction.OnPasswordConfirmationVisibilityChange -> {
-                onPasswordConfirmationVisibilityChange(action.isVisible)
             }
 
             RegistrationAction.OnAlreadyHaveAccountClick -> onAlreadyHaveAccountClick()
@@ -319,34 +250,38 @@ class RegistrationViewModel(
         }
     }
 
-    private fun onPasswordConfirmationVisibilityChange(visible: Boolean) {
+    private fun onPasswordConfirmationFocusChange(isFocused: Boolean) {
+        if (state.value.isPasswordConfirmationFocused && !isFocused) {
+            hasPasswordConfirmationBeenFocused.value = true
+        }
+
         _state.update {
             it.copy(
-                showPasswordConfirmation = visible
+                isPasswordConfirmationFocused = isFocused
             )
         }
     }
 
-    private fun onPasswordConfirmationFocusChange(focused: Boolean) {
+    private fun onPasswordFocusChange(isFocused: Boolean) {
+        if (state.value.isPasswordFocused && !isFocused) {
+            hasPasswordBeenFocused.value = true
+        }
+
         _state.update {
             it.copy(
-                isFocusedPasswordConfirmation = focused
+                isPasswordFocused = isFocused
             )
         }
     }
 
-    private fun onPasswordFocusChange(focused: Boolean) {
-        _state.update {
-            it.copy(
-                isFocusedPassword = focused
-            )
+    private fun onEmailFocusChange(isFocused: Boolean) {
+        if (state.value.isEmailFocused && !isFocused) {
+            hasEmailBeenFocused.value = true
         }
-    }
 
-    private fun onEmailFocusChange(focused: Boolean) {
         _state.update {
             it.copy(
-                isFocusedEmail = focused
+                isEmailFocused = isFocused
             )
         }
     }
@@ -359,10 +294,14 @@ class RegistrationViewModel(
         }
     }
 
-    private fun onUsernameFocusChange(focused: Boolean) {
+    private fun onUsernameFocusChange(isFocused: Boolean) {
+        if (state.value.isUsernameFocused && !isFocused) {
+            hasUsernameBeenFocused.value = true
+        }
+
         _state.update {
             it.copy(
-                isFocusedUsername = focused
+                isUsernameFocused = isFocused
             )
         }
     }
