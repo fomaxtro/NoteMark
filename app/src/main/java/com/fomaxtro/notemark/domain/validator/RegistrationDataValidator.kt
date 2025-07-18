@@ -1,9 +1,9 @@
 package com.fomaxtro.notemark.domain.validator
 
-import com.fomaxtro.notemark.domain.util.Error
+import com.fomaxtro.notemark.domain.util.ValidationError
 import com.fomaxtro.notemark.domain.util.ValidationResult
 
-enum class RegistrationDataError : Error {
+enum class RegistrationDataError : ValidationError {
     USERNAME_TOO_SHORT,
     USERNAME_TOO_LONG,
     EMAIL_INVALID,

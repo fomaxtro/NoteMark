@@ -1,6 +1,6 @@
 package com.fomaxtro.notemark.domain.validator
 
-import com.fomaxtro.notemark.domain.util.Error
+import com.fomaxtro.notemark.domain.util.ValidationError
 import com.fomaxtro.notemark.domain.util.ValidationResult
 
 class LoginDataValidator(
@@ -15,6 +15,6 @@ class LoginDataValidator(
     }
 }
 
-enum class LoginDataError : Error {
+enum class LoginDataError : ValidationError {
     EMAIL_INVALID
 }
