@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -102,7 +103,8 @@ private fun RegistrationScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .imePadding(),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 NoteMarkTextField(
@@ -183,6 +185,7 @@ private fun RegistrationScreen(
 
                 NoteMarkButton(
                     onClick = {
+                        focusManager.clearFocus()
                         onAction(RegistrationAction.OnCreateAccountClick)
                     },
                     text = stringResource(R.string.create_account),
@@ -194,6 +197,7 @@ private fun RegistrationScreen(
 
                 TextButton(
                     onClick = {
+                        focusManager.clearFocus()
                         onAction(RegistrationAction.OnAlreadyHaveAccountClick)
                     },
                     modifier = Modifier

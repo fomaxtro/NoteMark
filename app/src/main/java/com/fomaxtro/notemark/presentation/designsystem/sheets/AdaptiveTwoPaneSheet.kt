@@ -67,7 +67,8 @@ fun AdaptiveTwoPaneSheet(
                         .padding(
                             horizontal = 120.dp,
                             vertical = 100.dp
-                        ),
+                        )
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeaderPane(
