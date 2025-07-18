@@ -128,6 +128,7 @@ private fun LoginScreen(
 
                 NoteMarkButton(
                     onClick = {
+                        focusManager.clearFocus()
                         onAction(LoginAction.OnLogInClick)
                     },
                     text = stringResource(R.string.log_in),
@@ -139,6 +140,7 @@ private fun LoginScreen(
 
                 TextButton(
                     onClick = {
+                        focusManager.clearFocus()
                         onAction(LoginAction.OnDontHaveAccountClick)
                     },
                     modifier = Modifier
