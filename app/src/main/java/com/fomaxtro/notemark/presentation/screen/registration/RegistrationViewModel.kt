@@ -44,9 +44,8 @@ class RegistrationViewModel(
     private val eventChannel = Channel<RegistrationEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val hasUsernameBeenFocused = MutableStateFlow(false)
     private val isUsernameValid = createFieldValidationFlow(
-        shouldValidate = hasUsernameBeenFocused,
+        shouldValidate = state.map { it.isUsernameFocused },
         value = state.map { it.username },
         validator = { validator.validateUsername(it) },
         onError = { error ->
@@ -58,9 +57,8 @@ class RegistrationViewModel(
         }
     )
 
-    private val hasEmailBeenFocused = MutableStateFlow(false)
     private val isEmailValid = createFieldValidationFlow(
-        shouldValidate = hasEmailBeenFocused,
+        shouldValidate = state.map { it.isEmailFocused },
         value = state.map { it.email },
         validator = { validator.validateEmail(it) },
         onError = { error ->
@@ -73,9 +71,8 @@ class RegistrationViewModel(
     )
 
     private val passwordFlow = snapshotFlow { state.value.password.text.toString() }
-    private val hasPasswordBeenFocused = MutableStateFlow(false)
     private val isPasswordValid = createFieldValidationFlow(
-        shouldValidate = hasPasswordBeenFocused,
+        shouldValidate = state.map { it.isPasswordFocused },
         value = passwordFlow,
         validator = { validator.validatePassword(it) },
         onError = { error ->
@@ -90,9 +87,10 @@ class RegistrationViewModel(
     private val passwordConfirmationFlow = snapshotFlow {
         state.value.passwordConfirmation.text.toString()
     }
-    private val hasPasswordConfirmationBeenFocused = MutableStateFlow(false)
     private val isPasswordConfirmationValid = createFieldValidationFlow(
-        shouldValidate = hasPasswordConfirmationBeenFocused,
+        shouldValidate = state.map { state ->
+            state.isPasswordFocused || state.isPasswordConfirmationFocused
+        },
         value = combine(passwordFlow, passwordConfirmationFlow) { password, passwordConfirmation ->
             password to passwordConfirmation
         },
@@ -251,10 +249,6 @@ class RegistrationViewModel(
     }
 
     private fun onPasswordConfirmationFocusChange(isFocused: Boolean) {
-        if (state.value.isPasswordConfirmationFocused && !isFocused) {
-            hasPasswordConfirmationBeenFocused.value = true
-        }
-
         _state.update {
             it.copy(
                 isPasswordConfirmationFocused = isFocused
@@ -263,10 +257,6 @@ class RegistrationViewModel(
     }
 
     private fun onPasswordFocusChange(isFocused: Boolean) {
-        if (state.value.isPasswordFocused && !isFocused) {
-            hasPasswordBeenFocused.value = true
-        }
-
         _state.update {
             it.copy(
                 isPasswordFocused = isFocused
@@ -275,10 +265,6 @@ class RegistrationViewModel(
     }
 
     private fun onEmailFocusChange(isFocused: Boolean) {
-        if (state.value.isEmailFocused && !isFocused) {
-            hasEmailBeenFocused.value = true
-        }
-
         _state.update {
             it.copy(
                 isEmailFocused = isFocused
@@ -295,10 +281,6 @@ class RegistrationViewModel(
     }
 
     private fun onUsernameFocusChange(isFocused: Boolean) {
-        if (state.value.isUsernameFocused && !isFocused) {
-            hasUsernameBeenFocused.value = true
-        }
-
         _state.update {
             it.copy(
                 isUsernameFocused = isFocused
