@@ -4,9 +4,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
+import com.fomaxtro.notemark.data.SyncController
 import com.fomaxtro.notemark.data.conectivity.AndroidConnectivity
 import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.database.dao.NoteDao
+import com.fomaxtro.notemark.data.database.dao.SyncDao
+import com.fomaxtro.notemark.data.database.dao.SyncInfoDao
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.store.EncryptedPreferenceSerializer
 import com.fomaxtro.notemark.data.datastore.store.SecurePreference
@@ -70,6 +73,10 @@ val dataModule = module {
         ).build()
     }
     single<NoteDao> { get<NoteMarkDatabase>().noteDao() }
+    single<SyncDao> { get<NoteMarkDatabase>().syncDao() }
+    single<SyncInfoDao> { get<NoteMarkDatabase>().syncInfoDao() }
 
     singleOf(::AndroidConnectivity).bind<Connectivity>()
+
+    singleOf(::SyncController)
 }

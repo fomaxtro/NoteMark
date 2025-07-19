@@ -1,12 +1,12 @@
 package com.fomaxtro.notemark.data.repository
 
+import com.fomaxtro.notemark.data.SyncController
 import com.fomaxtro.notemark.data.database.dao.NoteDao
+import com.fomaxtro.notemark.data.database.entity.SyncOperation
 import com.fomaxtro.notemark.data.database.util.safeDatabaseCall
 import com.fomaxtro.notemark.data.mapper.toDataError
 import com.fomaxtro.notemark.data.mapper.toNote
-import com.fomaxtro.notemark.data.mapper.toNoteDto
 import com.fomaxtro.notemark.data.mapper.toNoteEntity
-import com.fomaxtro.notemark.data.remote.datasource.NoteRemoteDataSource
 import com.fomaxtro.notemark.domain.error.DataError
 import com.fomaxtro.notemark.domain.model.Note
 import com.fomaxtro.notemark.domain.repository.NoteRepository
@@ -21,8 +21,8 @@ import java.util.UUID
 
 class NoteRepositoryImpl(
     private val noteDao: NoteDao,
-    private val noteDataSource: NoteRemoteDataSource,
-    private val applicationScope: CoroutineScope
+    private val applicationScope: CoroutineScope,
+    private val syncController: SyncController
 ) : NoteRepository {
     override suspend fun create(note: Note): EmptyResult<DataError> {
         val result = safeDatabaseCall {
@@ -30,7 +30,7 @@ class NoteRepositoryImpl(
         }
 
         applicationScope.launch {
-            noteDataSource.create(note.toNoteDto())
+            syncController.scheduleSyncOperation(note.toNoteEntity(), SyncOperation.INSERT)
         }
 
         return result.mapError { it.toDataError() }
@@ -42,7 +42,7 @@ class NoteRepositoryImpl(
         }
 
         applicationScope.launch {
-            noteDataSource.update(note.toNoteDto())
+            syncController.scheduleSyncOperation(note.toNoteEntity(), SyncOperation.UPDATE)
         }
 
         return result.mapError { it.toDataError() }
@@ -55,13 +55,14 @@ class NoteRepositoryImpl(
     }
 
     override suspend fun delete(noteId: UUID) {
-        noteDao.findById(noteId.toString())
+        val noteEntity = noteDao.findById(noteId.toString())
             .first()
-            .also { noteDao.delete(it) }
 
         applicationScope.launch {
-            noteDataSource.delete(noteId.toString())
+            syncController.scheduleSyncOperation(noteEntity, SyncOperation.DELETE)
         }
+
+        noteDao.delete(noteEntity)
     }
 
     override fun getRecentNotes(): Flow<List<Note>> {
