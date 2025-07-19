@@ -1,7 +1,7 @@
 package com.fomaxtro.notemark.data.datastore.store
 
 import androidx.datastore.core.Serializer
-import com.fomaxtro.notemark.data.Crypto
+import com.fomaxtro.notemark.data.crypto.Crypto
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

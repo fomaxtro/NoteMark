@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.data
+package com.fomaxtro.notemark.data.crypto
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties

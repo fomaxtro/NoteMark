@@ -1,4 +1,4 @@
-package com.fomaxtro.notemark.data
+package com.fomaxtro.notemark.data.sync
 
 import com.fomaxtro.notemark.data.database.dao.SyncDao
 import com.fomaxtro.notemark.data.database.entity.NoteEntity
