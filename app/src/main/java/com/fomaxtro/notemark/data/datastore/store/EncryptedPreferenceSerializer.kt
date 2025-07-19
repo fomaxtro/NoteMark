@@ -2,6 +2,7 @@ package com.fomaxtro.notemark.data.datastore.store
 
 import androidx.datastore.core.Serializer
 import com.fomaxtro.notemark.data.Crypto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -19,7 +20,15 @@ object EncryptedPreferenceSerializer : Serializer<SecurePreference> {
 
         val decryptedBytes = Crypto.decrypt(encryptedBytes)
 
-        return Json.decodeFromString(decryptedBytes.decodeToString())
+        return try {
+            Json.decodeFromString(decryptedBytes.decodeToString())
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+            if (e is CancellationException) throw e
+
+            defaultValue
+        }
     }
 
     override suspend fun writeTo(t: SecurePreference, output: OutputStream) {
