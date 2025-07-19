@@ -1,6 +1,5 @@
-package com.fomaxtro.notemark.data.remote.impl
+package com.fomaxtro.notemark.data.remote.datasource
 
-import com.fomaxtro.notemark.data.remote.datasource.UserDataSource
 import com.fomaxtro.notemark.data.remote.dto.RegisterRequest
 import com.fomaxtro.notemark.data.remote.util.NetworkError
 import com.fomaxtro.notemark.data.remote.util.createRoute
@@ -10,10 +9,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
-class KtorUserDataSource(
+class UserRemoteDataSource(
     private val httpClient: HttpClient
-) : UserDataSource {
-    override suspend fun register(request: RegisterRequest): EmptyResult<NetworkError> {
+) {
+    suspend fun register(request: RegisterRequest): EmptyResult<NetworkError> {
         return safeRemoteCall {
             httpClient.post(createRoute("/auth/register")) {
                 setBody(request)

@@ -1,7 +1,7 @@
 package com.fomaxtro.notemark.data.remote
 
 import com.fomaxtro.notemark.BuildConfig
-import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
+import com.fomaxtro.notemark.data.datastore.SessionStorage
 import com.fomaxtro.notemark.data.datastore.dto.TokenPair
 import com.fomaxtro.notemark.data.remote.dto.RefreshTokenRequest
 import com.fomaxtro.notemark.data.remote.dto.RefreshTokenResponse
@@ -30,7 +30,7 @@ import timber.log.Timber
 
 object HttpClientFactory {
     fun create(
-        sessionStorage: SecureSessionStorage
+        sessionStorage: SessionStorage
     ): HttpClient {
         return HttpClient(CIO) {
             install(ContentNegotiation) {

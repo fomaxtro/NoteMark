@@ -9,15 +9,14 @@ import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.database.dao.NoteDao
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.impl.DataStoreSecureSessionStorage
+import com.fomaxtro.notemark.data.datastore.SessionStorage
+import com.fomaxtro.notemark.data.datastore.impl.EncryptedDataStoreSessionStorage
 import com.fomaxtro.notemark.data.datastore.store.EncryptedPreferenceSerializer
 import com.fomaxtro.notemark.data.datastore.store.SecurePreference
 import com.fomaxtro.notemark.data.remote.HttpClientFactory
-import com.fomaxtro.notemark.data.remote.datasource.AuthDataSource
-import com.fomaxtro.notemark.data.remote.datasource.NoteDataSource
-import com.fomaxtro.notemark.data.remote.datasource.UserDataSource
-import com.fomaxtro.notemark.data.remote.impl.KtorAuthDataSource
-import com.fomaxtro.notemark.data.remote.impl.KtorNoteDataSource
-import com.fomaxtro.notemark.data.remote.impl.KtorUserDataSource
+import com.fomaxtro.notemark.data.remote.datasource.AuthRemoteDataSource
+import com.fomaxtro.notemark.data.remote.datasource.NoteRemoteDataSource
+import com.fomaxtro.notemark.data.remote.datasource.UserRemoteDataSource
 import com.fomaxtro.notemark.data.repository.AuthRepositoryImpl
 import com.fomaxtro.notemark.data.repository.NoteRepositoryImpl
 import com.fomaxtro.notemark.data.repository.UserRepositoryImpl
@@ -48,9 +47,9 @@ val dataModule = module {
         )
     }
 
-    singleOf(::KtorAuthDataSource).bind<AuthDataSource>()
-    singleOf(::KtorNoteDataSource).bind<NoteDataSource>()
-    singleOf(::KtorUserDataSource).bind<UserDataSource>()
+    singleOf(::AuthRemoteDataSource)
+    singleOf(::NoteRemoteDataSource)
+    singleOf(::UserRemoteDataSource)
 
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
     singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
@@ -64,7 +63,7 @@ val dataModule = module {
             }
         )
     }
-    singleOf(::DataStoreSecureSessionStorage).bind<SecureSessionStorage>()
+    singleOf(::EncryptedDataStoreSessionStorage).bind<SessionStorage>()
 
     single<NoteMarkDatabase> {
         Room.databaseBuilder(

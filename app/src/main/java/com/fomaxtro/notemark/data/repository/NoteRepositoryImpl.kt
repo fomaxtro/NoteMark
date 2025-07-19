@@ -6,7 +6,7 @@ import com.fomaxtro.notemark.data.mapper.toDataError
 import com.fomaxtro.notemark.data.mapper.toNote
 import com.fomaxtro.notemark.data.mapper.toNoteDto
 import com.fomaxtro.notemark.data.mapper.toNoteEntity
-import com.fomaxtro.notemark.data.remote.datasource.NoteDataSource
+import com.fomaxtro.notemark.data.remote.datasource.NoteRemoteDataSource
 import com.fomaxtro.notemark.domain.error.DataError
 import com.fomaxtro.notemark.domain.model.Note
 import com.fomaxtro.notemark.domain.repository.NoteRepository
@@ -21,7 +21,7 @@ import java.util.UUID
 
 class NoteRepositoryImpl(
     private val noteDao: NoteDao,
-    private val noteDataSource: NoteDataSource,
+    private val noteDataSource: NoteRemoteDataSource,
     private val applicationScope: CoroutineScope
 ) : NoteRepository {
     override suspend fun create(note: Note): EmptyResult<DataError> {

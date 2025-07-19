@@ -1,6 +1,5 @@
-package com.fomaxtro.notemark.data.remote.impl
+package com.fomaxtro.notemark.data.remote.datasource
 
-import com.fomaxtro.notemark.data.remote.datasource.NoteDataSource
 import com.fomaxtro.notemark.data.remote.dto.NoteDto
 import com.fomaxtro.notemark.data.remote.util.NetworkError
 import com.fomaxtro.notemark.data.remote.util.createRoute
@@ -13,10 +12,10 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 
-class KtorNoteDataSource(
+class NoteRemoteDataSource(
     private val httpClient: HttpClient
-) : NoteDataSource {
-    override suspend fun create(note: NoteDto): Result<NoteDto, NetworkError> {
+) {
+    suspend fun create(note: NoteDto): Result<NoteDto, NetworkError> {
         return safeRemoteCall {
             httpClient.post(createRoute("/notes")) {
                 setBody(note)
@@ -24,7 +23,7 @@ class KtorNoteDataSource(
         }
     }
 
-    override suspend fun update(note: NoteDto): Result<NoteDto, NetworkError> {
+    suspend fun update(note: NoteDto): Result<NoteDto, NetworkError> {
         return safeRemoteCall {
             httpClient.put(createRoute("/notes")) {
                 setBody(note)
@@ -32,7 +31,7 @@ class KtorNoteDataSource(
         }
     }
 
-    override suspend fun delete(id: String): EmptyResult<NetworkError> {
+    suspend fun delete(id: String): EmptyResult<NetworkError> {
         return safeRemoteCall {
             httpClient.delete(createRoute("/notes/$id"))
         }
