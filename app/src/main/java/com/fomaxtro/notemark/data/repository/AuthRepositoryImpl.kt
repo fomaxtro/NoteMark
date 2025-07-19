@@ -1,7 +1,7 @@
 package com.fomaxtro.notemark.data.repository
 
 import com.fomaxtro.notemark.data.database.NoteMarkDatabase
-import com.fomaxtro.notemark.data.datastore.SessionStorage
+import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.dto.AuthInfo
 import com.fomaxtro.notemark.data.datastore.dto.TokenPair
 import com.fomaxtro.notemark.data.mapper.toLoginError
@@ -19,7 +19,7 @@ import java.util.UUID
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthRemoteDataSource,
-    private val sessionStorage: SessionStorage,
+    private val sessionStorage: SecureSessionStorage,
     private val database: NoteMarkDatabase
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): EmptyResult<LoginError> {

@@ -1,6 +1,6 @@
 package com.fomaxtro.notemark.data.repository
 
-import com.fomaxtro.notemark.data.datastore.SessionStorage
+import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.mapper.toRegisterError
 import com.fomaxtro.notemark.data.remote.datasource.UserRemoteDataSource
 import com.fomaxtro.notemark.data.remote.dto.RegisterRequest
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 
 class UserRepositoryImpl(
     private val userDataSource: UserRemoteDataSource,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SecureSessionStorage
 ) : UserRepository {
     override suspend fun register(
         username: String,

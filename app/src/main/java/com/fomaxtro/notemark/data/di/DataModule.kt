@@ -8,9 +8,6 @@ import com.fomaxtro.notemark.data.conectivity.AndroidConnectivity
 import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.database.dao.NoteDao
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
-import com.fomaxtro.notemark.data.datastore.impl.DataStoreSecureSessionStorage
-import com.fomaxtro.notemark.data.datastore.SessionStorage
-import com.fomaxtro.notemark.data.datastore.impl.EncryptedDataStoreSessionStorage
 import com.fomaxtro.notemark.data.datastore.store.EncryptedPreferenceSerializer
 import com.fomaxtro.notemark.data.datastore.store.SecurePreference
 import com.fomaxtro.notemark.data.remote.HttpClientFactory
@@ -63,7 +60,7 @@ val dataModule = module {
             }
         )
     }
-    singleOf(::EncryptedDataStoreSessionStorage).bind<SessionStorage>()
+    singleOf(::SecureSessionStorage)
 
     single<NoteMarkDatabase> {
         Room.databaseBuilder(
