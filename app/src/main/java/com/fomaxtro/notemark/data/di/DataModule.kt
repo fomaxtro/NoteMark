@@ -18,6 +18,7 @@ import com.fomaxtro.notemark.data.remote.datasource.NoteRemoteDataSource
 import com.fomaxtro.notemark.data.remote.datasource.UserRemoteDataSource
 import com.fomaxtro.notemark.data.repository.AuthRepositoryImpl
 import com.fomaxtro.notemark.data.repository.NoteRepositoryImpl
+import com.fomaxtro.notemark.data.repository.SyncRepositoryImpl
 import com.fomaxtro.notemark.data.repository.UserRepositoryImpl
 import com.fomaxtro.notemark.data.sync.SyncController
 import com.fomaxtro.notemark.data.sync.SyncWorker
@@ -25,6 +26,7 @@ import com.fomaxtro.notemark.data.validator.AndroidPatternMatching
 import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.repository.NoteRepository
+import com.fomaxtro.notemark.domain.repository.SyncRepository
 import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.validator.PatternMatching
 import io.ktor.client.HttpClient
@@ -56,6 +58,7 @@ val dataModule = module {
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
     singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
     singleOf(::UserRepositoryImpl).bind<UserRepository>()
+    singleOf(::SyncRepositoryImpl).bind<SyncRepository>()
 
     single<DataStore<SecurePreference>> {
         DataStoreFactory.create(
