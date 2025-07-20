@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "54c23745015577e5d87875cc1c56baa9",
+    "identityHash": "5adc5ac0e852ade5ec1fd5470bf31019",
     "entities": [
       {
         "tableName": "notes",
@@ -48,7 +48,7 @@
       },
       {
         "tableName": "syncs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` TEXT NOT NULL, `operation` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `local_id` TEXT, `local_title` TEXT, `local_content` TEXT, `local_created_at` INTEGER, `local_last_edited_at` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` TEXT NOT NULL, `operation` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `local_id` TEXT NOT NULL, `local_title` TEXT NOT NULL, `local_content` TEXT NOT NULL, `local_created_at` INTEGER NOT NULL, `local_last_edited_at` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -77,27 +77,32 @@
           {
             "fieldPath": "note.id",
             "columnName": "local_id",
-            "affinity": "TEXT"
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "note.title",
             "columnName": "local_title",
-            "affinity": "TEXT"
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "note.content",
             "columnName": "local_content",
-            "affinity": "TEXT"
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "note.createdAt",
             "columnName": "local_created_at",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "note.lastEditedAt",
             "columnName": "local_last_edited_at",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -134,7 +139,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '54c23745015577e5d87875cc1c56baa9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5adc5ac0e852ade5ec1fd5470bf31019')"
     ]
   }
 }

@@ -9,7 +9,10 @@ import com.fomaxtro.notemark.data.database.entity.SyncEntity
 @Dao
 interface SyncDao {
     @Query("SELECT * FROM syncs WHERE user_id = :userId AND local_id = :noteId LIMIT 1")
-    suspend fun findByUserIdAndNoteId(userId: String, noteId: String): SyncEntity? 
+    suspend fun findByUserIdAndNoteId(userId: String, noteId: String): SyncEntity?
+
+    @Query("SELECT * FROM syncs WHERE user_id = :userId ORDER BY created_at")
+    suspend fun findByUserId(userId: String): List<SyncEntity>
 
     @Upsert
     suspend fun upsert(sync: SyncEntity)

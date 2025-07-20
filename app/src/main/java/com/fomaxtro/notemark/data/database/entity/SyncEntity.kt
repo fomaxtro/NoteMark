@@ -16,6 +16,6 @@ data class SyncEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "user_id") val userId: String,
     val operation: SyncOperation,
-    @Embedded(prefix = "local_") val note: NoteEntity? = null,
+    @Embedded(prefix = "local_") val note: NoteEntity,
     @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
 )

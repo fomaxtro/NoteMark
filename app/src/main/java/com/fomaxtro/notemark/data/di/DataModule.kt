@@ -25,7 +25,6 @@ import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.repository.NoteRepository
 import com.fomaxtro.notemark.domain.repository.UserRepository
-import com.fomaxtro.notemark.domain.sync.SyncManager
 import com.fomaxtro.notemark.domain.validator.PatternMatching
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
