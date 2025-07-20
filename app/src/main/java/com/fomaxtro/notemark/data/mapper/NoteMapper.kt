@@ -38,3 +38,11 @@ fun NoteEntity.toNoteDto() = NoteDto(
     createdAt = Instant.ofEpochMilli(createdAt).toString(),
     lastEditedAt = Instant.ofEpochMilli(lastEditedAt).toString()
 )
+
+fun NoteDto.toNoteEntity() = NoteEntity(
+    id = id,
+    title = title,
+    content = content,
+    createdAt = Instant.parse(createdAt).toEpochMilli(),
+    lastEditedAt = Instant.parse(lastEditedAt).toEpochMilli()
+)

@@ -1,5 +1,7 @@
 package com.fomaxtro.notemark.data.sync
 
+import androidx.room.withTransaction
+import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.database.dao.NoteDao
 import com.fomaxtro.notemark.data.database.dao.SyncDao
 import com.fomaxtro.notemark.data.database.entity.NoteEntity
@@ -7,19 +9,22 @@ import com.fomaxtro.notemark.data.database.entity.SyncEntity
 import com.fomaxtro.notemark.data.database.entity.SyncOperation
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.mapper.toNoteDto
+import com.fomaxtro.notemark.data.mapper.toNoteEntity
 import com.fomaxtro.notemark.data.remote.datasource.NoteRemoteDataSource
 import com.fomaxtro.notemark.data.remote.dto.NoteDto
 import com.fomaxtro.notemark.data.remote.util.NetworkError
 import com.fomaxtro.notemark.domain.util.EmptyResult
 import com.fomaxtro.notemark.domain.util.Result
 import com.fomaxtro.notemark.domain.util.asEmptyResult
+import kotlinx.coroutines.flow.first
 import java.time.Instant
 
 class SyncController(
     private val syncDao: SyncDao,
     private val sessionStorage: SecureSessionStorage,
     private val noteDataSource: NoteRemoteDataSource,
-    private val noteDao: NoteDao
+    private val noteDao: NoteDao,
+    private val database: NoteMarkDatabase
 ) {
     suspend fun scheduleSyncOperation(note: NoteEntity, operation: SyncOperation) {
         val userId = sessionStorage.getUserId() ?: return
@@ -160,5 +165,44 @@ class SyncController(
             noteDataSource.update(localNote.toNoteDto())
                 .asEmptyResult()
         } else Result.Success(Unit)
+    }
+
+    suspend fun pullAndMergeFromRemote(): EmptyResult<SyncError> {
+        val remoteNotes = when (val notesResult = noteDataSource.getAll()) {
+            is Result.Error -> return Result.Error(SyncError.FAILED_TO_FETCH_NOTES)
+            is Result.Success -> notesResult.data.notes
+        }
+
+        val localNotes = noteDao.getRecentNotes().first()
+
+        val upsertNotes = remoteNotes
+            .map { it.toNoteEntity() }
+            .filter { remoteNote ->
+                val localNote = localNotes.find { localNote ->
+                    localNote.id == remoteNote.id
+                }
+
+                remoteNote.lastEditedAt > (localNote?.lastEditedAt ?: 0)
+            }
+
+        val deleteNotes = localNotes.filter { localNote ->
+            val remoteNote = remoteNotes.find { remoteNotes ->
+                remoteNotes.id == localNote.id
+            }
+
+            remoteNote == null
+        }
+
+        database.withTransaction {
+            if (upsertNotes.isNotEmpty()) {
+                noteDao.upsert(upsertNotes)
+            }
+
+            if (deleteNotes.isNotEmpty()) {
+                noteDao.delete(deleteNotes)
+            }
+        }
+
+        return Result.Success(Unit)
     }
 }

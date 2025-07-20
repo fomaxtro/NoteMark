@@ -12,11 +12,17 @@ interface NoteDao {
     @Upsert
     suspend fun upsert(note: NoteEntity)
 
+    @Upsert
+    suspend fun upsert(notes: List<NoteEntity>)
+
     @Query("SELECT * FROM notes WHERE id = :id")
     fun findById(id: String): Flow<NoteEntity>
 
     @Delete
     suspend fun delete(note: NoteEntity)
+
+    @Delete
+    suspend fun delete(notes: List<NoteEntity>)
 
     @Query("SELECT * FROM notes ORDER BY created_at DESC")
     fun getRecentNotes(): Flow<List<NoteEntity>>
