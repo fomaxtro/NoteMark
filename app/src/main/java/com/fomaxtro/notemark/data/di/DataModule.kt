@@ -20,6 +20,7 @@ import com.fomaxtro.notemark.data.repository.AuthRepositoryImpl
 import com.fomaxtro.notemark.data.repository.NoteRepositoryImpl
 import com.fomaxtro.notemark.data.repository.UserRepositoryImpl
 import com.fomaxtro.notemark.data.sync.SyncController
+import com.fomaxtro.notemark.data.sync.SyncWorker
 import com.fomaxtro.notemark.data.validator.AndroidPatternMatching
 import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.repository.AuthRepository
@@ -31,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -79,4 +81,6 @@ val dataModule = module {
     singleOf(::AndroidConnectivity).bind<Connectivity>()
 
     singleOf(::SyncController)
+
+    workerOf(::SyncWorker)
 }
