@@ -65,6 +65,9 @@
     <string name="one_hour">1 hour</string>
     <string name="never_synced">Never synced</string>
     <string name="minutes_ago">%d minutes ago</string>
+    <string name="syncing_data">Syncing data…</string>
+    <string name="sync_succeeded">Sync succeeded</string>
+    <string name="sync_failed">Sync failed</string>
 
     <plurals name="days_ago">
         <item quantity="one">%d day ago</item>

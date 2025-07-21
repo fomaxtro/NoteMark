@@ -14,6 +14,15 @@ class AndroidConnectivity(context: Context) : Connectivity {
     private val connectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 
     override fun hasInternetConnection(): Flow<Boolean> = callbackFlow {
+        val currentNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(currentNetwork)
+
+        val hasInternet = networkCapabilities?.let { networkCapabilities ->
+            hasInternetConnection(networkCapabilities)
+        } ?: false
+
+        trySend(hasInternet)
+
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
@@ -25,10 +34,7 @@ class AndroidConnectivity(context: Context) : Connectivity {
             ) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
 
-                val hasInternet = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                val hasValidatedInternet = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-
-                trySend(hasInternet && hasValidatedInternet)
+                trySend(hasInternetConnection(networkCapabilities))
             }
 
             override fun onLost(network: Network) {
@@ -43,5 +49,14 @@ class AndroidConnectivity(context: Context) : Connectivity {
         awaitClose {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
+    }
+
+    private fun hasInternetConnection(networkCapabilities: NetworkCapabilities): Boolean {
+        val hasInternet = networkCapabilities
+            .hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        val hasValidatedInternet = networkCapabilities
+            .hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
+        return hasInternet && hasValidatedInternet
     }
 }

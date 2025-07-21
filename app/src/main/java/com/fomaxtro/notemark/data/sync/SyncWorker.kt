@@ -14,9 +14,8 @@ class SyncWorker(
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
-    companion object {
+    private companion object {
         const val MAX_ATTEMPTS = 3
-        const val MIN_BACKOFF_SECONDS = 30L
     }
 
     override suspend fun doWork(): Result {

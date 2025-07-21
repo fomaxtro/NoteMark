@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.settings
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,10 +55,18 @@ fun SettingsRoot(
     viewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             SettingsEvent.NavigateBack -> navigateBack()
+            is SettingsEvent.ShoSystemMessage -> {
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -195,7 +205,9 @@ private fun SettingsScreen(
                             id = R.string.last_sync,
                             state.lastSyncTime.asString()
                         ),
-                        onClick = {},
+                        onClick = {
+                            onAction(SettingsAction.OnSyncDataClick)
+                        },
                         enabled = !state.isSyncing
                     )
 
