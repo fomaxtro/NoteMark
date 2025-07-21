@@ -1,7 +1,6 @@
 package com.fomaxtro.notemark.data.repository
 
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
@@ -16,12 +15,12 @@ import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.sync.SyncWorker
 import com.fomaxtro.notemark.domain.model.SyncStatus
 import com.fomaxtro.notemark.domain.repository.SyncRepository
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.takeWhile
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +29,7 @@ class SyncRepositoryImpl(
     private val syncInfoDao: SyncInfoDao,
     private val sessionStorage: SecureSessionStorage
 ) : SyncRepository {
-    override fun performFullSync(): Flow<SyncStatus> = callbackFlow {
+    override fun performFullSync(): Flow<SyncStatus> = flow {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresStorageNotLow(true)
@@ -54,33 +53,28 @@ class SyncRepositoryImpl(
             syncWorkRequest
         ).await()
 
-        val workInfoLiveData = workManager
-            .getWorkInfoByIdLiveData(syncWorkRequest.id)
+        emitAll(
+            workManager
+                .getWorkInfoByIdFlow(syncWorkRequest.id)
+                .map { workInfo ->
+                    when (workInfo?.state) {
+                        WorkInfo.State.RUNNING -> SyncStatus.SYNCING
 
-        val workInfoObserver = Observer<WorkInfo?> { workInfo ->
-            when (workInfo?.state) {
-                WorkInfo.State.RUNNING -> trySend(SyncStatus.SYNCING)
+                        WorkInfo.State.ENQUEUED,
+                        WorkInfo.State.BLOCKED -> null
 
-                WorkInfo.State.ENQUEUED,
-                WorkInfo.State.BLOCKED -> Unit
+                        WorkInfo.State.SUCCEEDED -> SyncStatus.SYNCED
 
-                WorkInfo.State.SUCCEEDED -> {
-                    trySend(SyncStatus.SYNCED)
-                    close()
+                        else -> SyncStatus.FAILED
+                    }
                 }
+                .filterNotNull()
+                .takeWhile { syncStatus ->
+                    emit(syncStatus)
 
-                else -> {
-                    trySend(SyncStatus.FAILED)
-                    close()
+                    syncStatus == SyncStatus.SYNCING
                 }
-            }
-        }
-
-        workInfoLiveData.observeForever(workInfoObserver)
-
-        awaitClose {
-            workInfoLiveData.removeObserver(workInfoObserver)
-        }
+        )
     }
 
     override fun getLastSyncTime(): Flow<Instant?> = flow {

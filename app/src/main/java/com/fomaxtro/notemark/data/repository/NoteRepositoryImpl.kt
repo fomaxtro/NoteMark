@@ -72,4 +72,8 @@ class NoteRepositoryImpl(
                 notes.map { it.toNote() }
             }
     }
+
+    override suspend fun deleteAll() {
+        noteDao.deleteAll()
+    }
 }

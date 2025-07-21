@@ -1,6 +1,5 @@
 package com.fomaxtro.notemark.data.repository
 
-import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.dto.AuthInfo
 import com.fomaxtro.notemark.data.datastore.dto.TokenPair
@@ -19,8 +18,7 @@ import java.util.UUID
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthRemoteDataSource,
-    private val sessionStorage: SecureSessionStorage,
-    private val database: NoteMarkDatabase
+    private val sessionStorage: SecureSessionStorage
 ) : AuthRepository {
     override suspend fun login(email: String, password: String): EmptyResult<LoginError> {
         val result =  authDataSource
@@ -59,11 +57,6 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
-        // TODO: Clear note table only
-        /*withContext(Dispatchers.IO) {
-            database.clearAllTables()
-        }*/
-
         val tokenPair = sessionStorage.getTokenPair()
 
         tokenPair?.let { tokenPair ->

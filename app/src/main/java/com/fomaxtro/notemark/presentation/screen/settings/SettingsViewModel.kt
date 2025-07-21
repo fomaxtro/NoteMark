@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.model.SyncStatus
-import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.repository.SyncRepository
+import com.fomaxtro.notemark.domain.use_case.Logout
 import com.fomaxtro.notemark.presentation.ui.UiText
 import com.fomaxtro.notemark.presentation.util.toSyncDateTimeUiText
 import kotlinx.coroutines.CoroutineScope
@@ -23,10 +23,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val authRepository: AuthRepository,
     private val applicationScope: CoroutineScope,
     private val syncRepository: SyncRepository,
-    private val connectivity: Connectivity
+    private val connectivity: Connectivity,
+    private val logout: Logout
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
     val state = _state
@@ -80,9 +80,11 @@ class SettingsViewModel(
     private fun onSyncDataClick() {
         viewModelScope.launch {
             if (!state.value.hasInternetConnection) {
-                eventChannel.send(SettingsEvent.ShoSystemMessage(
-                    UiText.StringResource(R.string.no_internet)
-                ))
+                eventChannel.send(
+                    SettingsEvent.ShoSystemMessage(
+                        UiText.StringResource(R.string.no_internet)
+                    )
+                )
 
                 return@launch
             }
@@ -101,11 +103,6 @@ class SettingsViewModel(
                 .await()
                 .collect { syncStatus ->
                     when (syncStatus) {
-                        SyncStatus.SYNCING -> {
-                            eventChannel.send(SettingsEvent.ShoSystemMessage(
-                                UiText.StringResource(R.string.syncing_data)
-                            ))
-                        }
                         SyncStatus.SYNCED -> {
                             _state.update {
                                 it.copy(
@@ -113,10 +110,13 @@ class SettingsViewModel(
                                 )
                             }
 
-                            eventChannel.send(SettingsEvent.ShoSystemMessage(
-                                UiText.StringResource(R.string.sync_succeeded)
-                            ))
+                            eventChannel.send(
+                                SettingsEvent.ShoSystemMessage(
+                                    UiText.StringResource(R.string.sync_succeeded)
+                                )
+                            )
                         }
+
                         SyncStatus.FAILED -> {
                             _state.update {
                                 it.copy(
@@ -124,10 +124,14 @@ class SettingsViewModel(
                                 )
                             }
 
-                            eventChannel.send(SettingsEvent.ShoSystemMessage(
-                                UiText.StringResource(R.string.sync_failed)
-                            ))
+                            eventChannel.send(
+                                SettingsEvent.ShoSystemMessage(
+                                    UiText.StringResource(R.string.sync_failed)
+                                )
+                            )
                         }
+
+                        else -> Unit
                     }
                 }
         }
@@ -140,14 +144,28 @@ class SettingsViewModel(
     }
 
     private fun onLogoutClick() {
-        _state.update {
-            it.copy(
-                isLoggingOut = true
-            )
-        }
+        viewModelScope.launch {
+            if (!state.value.hasInternetConnection) {
+                eventChannel.send(
+                    SettingsEvent.ShowMessage(
+                        UiText.StringResource(
+                            R.string.you_need_internet_connection_to_logout
+                        )
+                    )
+                )
 
-        applicationScope.launch {
-            authRepository.logout()
+                return@launch
+            }
+
+            _state.update {
+                it.copy(
+                    isLoggingOut = true
+                )
+            }
+
+            applicationScope.launch {
+                logout()
+            }
         }
     }
 }

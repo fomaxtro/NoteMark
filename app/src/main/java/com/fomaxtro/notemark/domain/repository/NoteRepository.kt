@@ -12,4 +12,5 @@ interface NoteRepository {
     fun findById(id: UUID): Flow<Note>
     suspend fun delete(noteId: UUID)
     fun getRecentNotes(): Flow<List<Note>>
+    suspend fun deleteAll()
 }

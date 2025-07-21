@@ -18,6 +18,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
-import com.fomaxtro.notemark.presentation.designsystem.scaffolds.NoteMarkScaffold
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.settings.components.SettingActionButton
 import com.fomaxtro.notemark.presentation.screen.settings.components.SettingDropdownMenuItem
@@ -56,6 +58,9 @@ fun SettingsRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -67,12 +72,16 @@ fun SettingsRoot(
                     Toast.LENGTH_LONG
                 ).show()
             }
+            is SettingsEvent.ShowMessage -> {
+                snackbarHostState.showSnackbar(event.message.asString(context))
+            }
         }
     }
 
     SettingsScreen(
         onAction = viewModel::onAction,
-        state = state
+        state = state,
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -80,7 +89,8 @@ fun SettingsRoot(
 @Composable
 private fun SettingsScreen(
     onAction: (SettingsAction) -> Unit = {},
-    state: SettingsState
+    state: SettingsState,
+    snackbarHostState: SnackbarHostState = SnackbarHostState()
 ) {
     val horizontalPadding = rememberAdaptiveHorizontalPadding()
     var isExpanded by remember {
@@ -99,8 +109,8 @@ private fun SettingsScreen(
             )
         }
     } else {
-        NoteMarkScaffold(
-            topAppBar = {
+        Scaffold(
+            topBar = {
                 NoteMarkTopAppBar(
                     title = {
                         Text(
@@ -121,7 +131,11 @@ private fun SettingsScreen(
                         }
                     }
                 )
-            }
+            },
+            snackbarHost = {
+                SnackbarHost(snackbarHostState)
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
         ) { innerPadding ->
             Box(
                 modifier = Modifier
