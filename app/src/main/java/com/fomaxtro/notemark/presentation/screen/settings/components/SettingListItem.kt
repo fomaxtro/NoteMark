@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
+import com.fomaxtro.notemark.presentation.designsystem.theme.disabled
 
 @Composable
 fun SettingListItem(
@@ -34,12 +35,14 @@ fun SettingListItem(
     onClick: () -> Unit,
     action: @Composable () -> Unit = {},
     subtitle: String? = null,
-    color: Color = LocalContentColor.current
+    color: Color = LocalContentColor.current,
+    enabled: Boolean = true
 ) {
     Row(
         modifier = modifier
             .clickable(
-                onClick = onClick
+                onClick = onClick,
+                enabled = enabled
             )
             .padding(
                 vertical = 16.dp
@@ -48,7 +51,11 @@ fun SettingListItem(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         CompositionLocalProvider(
-            LocalContentColor provides color
+            LocalContentColor provides if (enabled) {
+                color
+            } else {
+                MaterialTheme.colorScheme.disabled
+            }
         ) {
             Icon(
                 imageVector = icon,

@@ -22,3 +22,6 @@ val ColorScheme.primaryGradient: Brush
             Color(0xFF5A4CF7)
         )
     )
+
+val ColorScheme.disabled: Color
+    get() = onSurface.copy(alpha = 0.38f)

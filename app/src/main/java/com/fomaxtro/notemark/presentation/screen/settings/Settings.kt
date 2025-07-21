@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.presentation.screen.settings
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -40,7 +42,10 @@ import com.fomaxtro.notemark.presentation.screen.settings.components.SettingDrop
 import com.fomaxtro.notemark.presentation.screen.settings.components.SettingListItem
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberAdaptiveHorizontalPadding
+import com.fomaxtro.notemark.presentation.util.toSyncDateTimeUiText
 import org.koin.androidx.compose.koinViewModel
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun SettingsRoot(
@@ -108,92 +113,108 @@ private fun SettingsScreen(
                 )
             }
         ) { innerPadding ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(horizontalPadding)
+                    .padding(horizontalPadding),
+                contentAlignment = Alignment.Center
             ) {
-                SettingListItem(
-                    icon = Icons.Default.AccessTime,
-                    title = stringResource(R.string.sync_interval),
-                    onClick = {},
-                    action = {
-                        SettingActionButton(
-                            text = stringResource(R.string.manual_only),
-                            onClick = {
-                                isExpanded = true
-                            }
-                        )
-
-                        DropdownMenu(
-                            expanded = isExpanded,
-                            onDismissRequest = {
-                                isExpanded = false
-                            },
-                            shape = RoundedCornerShape(16.dp),
-                            offset = DpOffset(
-                                x = 0.dp,
-                                y = 16.dp
-                            ),
-                            modifier = Modifier
-                                .width(190.dp),
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-                        ) {
-                            SettingDropdownMenuItem(
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    SettingListItem(
+                        icon = Icons.Default.AccessTime,
+                        title = stringResource(R.string.sync_interval),
+                        onClick = {},
+                        enabled = !state.isSyncing,
+                        action = {
+                            SettingActionButton(
                                 text = stringResource(R.string.manual_only),
                                 onClick = {
-                                    isExpanded = false
+                                    isExpanded = true
                                 },
-                                isSelected = true
+                                enabled = !state.isSyncing
                             )
 
-                            SettingDropdownMenuItem(
-                                text = stringResource(R.string.fifteen_minutes),
-                                onClick = {
+                            DropdownMenu(
+                                expanded = isExpanded,
+                                onDismissRequest = {
                                     isExpanded = false
                                 },
-                                isSelected = false
-                            )
+                                shape = RoundedCornerShape(16.dp),
+                                offset = DpOffset(
+                                    x = 0.dp,
+                                    y = 16.dp
+                                ),
+                                modifier = Modifier
+                                    .width(190.dp),
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                            ) {
+                                SettingDropdownMenuItem(
+                                    text = stringResource(R.string.manual_only),
+                                    onClick = {
+                                        isExpanded = false
+                                    },
+                                    isSelected = true
+                                )
 
-                            SettingDropdownMenuItem(
-                                text = stringResource(R.string.thirty_minutes),
-                                onClick = {
-                                    isExpanded = false
-                                },
-                                isSelected = false
-                            )
+                                SettingDropdownMenuItem(
+                                    text = stringResource(R.string.fifteen_minutes),
+                                    onClick = {
+                                        isExpanded = false
+                                    },
+                                    isSelected = false
+                                )
 
-                            SettingDropdownMenuItem(
-                                text = stringResource(R.string.one_hour),
-                                onClick = {
-                                    isExpanded = false
-                                },
-                                isSelected = false
-                            )
+                                SettingDropdownMenuItem(
+                                    text = stringResource(R.string.thirty_minutes),
+                                    onClick = {
+                                        isExpanded = false
+                                    },
+                                    isSelected = false
+                                )
+
+                                SettingDropdownMenuItem(
+                                    text = stringResource(R.string.one_hour),
+                                    onClick = {
+                                        isExpanded = false
+                                    },
+                                    isSelected = false
+                                )
+                            }
                         }
-                    }
-                )
+                    )
 
-                HorizontalDivider()
+                    HorizontalDivider()
 
-                SettingListItem(
-                    icon = Icons.Default.Sync,
-                    title = stringResource(R.string.sync_data),
-                    subtitle = stringResource(R.string.last_sync, "12 min ago"),
-                    onClick = {}
-                )
+                    SettingListItem(
+                        icon = Icons.Default.Sync,
+                        title = stringResource(R.string.sync_data),
+                        subtitle = stringResource(
+                            id = R.string.last_sync,
+                            state.lastSyncTime.asString()
+                        ),
+                        onClick = {},
+                        enabled = !state.isSyncing
+                    )
 
-                HorizontalDivider()
+                    HorizontalDivider()
 
-                SettingListItem(
-                    icon = ImageVector.vectorResource(R.drawable.log_out),
-                    title = stringResource(R.string.log_out),
-                    onClick = {
-                        onAction(SettingsAction.OnLogoutClick)
-                    },
-                    color = MaterialTheme.colorScheme.error
-                )
+                    SettingListItem(
+                        icon = ImageVector.vectorResource(R.drawable.log_out),
+                        title = stringResource(R.string.log_out),
+                        onClick = {
+                            onAction(SettingsAction.OnLogoutClick)
+                        },
+                        color = MaterialTheme.colorScheme.error,
+                        enabled = !state.isSyncing
+                    )
+                }
+
+                if (state.isSyncing) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
@@ -202,9 +223,15 @@ private fun SettingsScreen(
 @Preview
 @Composable
 private fun SettingsScreenPreview() {
+    val lastSyncDate = Instant
+        .now()
+        .minus(10, ChronoUnit.DAYS)
+
     NoteMarkTheme {
         SettingsScreen(
-            state = SettingsState()
+            state = SettingsState(
+                lastSyncTime = lastSyncDate.toSyncDateTimeUiText()
+            )
         )
     }
 }

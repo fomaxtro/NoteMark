@@ -63,4 +63,16 @@
     <string name="fifteen_minutes">15 minutes</string>
     <string name="thirty_minutes">30 minutes</string>
     <string name="one_hour">1 hour</string>
+    <string name="never_synced">Never synced</string>
+    <string name="minutes_ago">%d minutes ago</string>
+
+    <plurals name="days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+
+    <plurals name="hours_ago">
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
 </resources>
