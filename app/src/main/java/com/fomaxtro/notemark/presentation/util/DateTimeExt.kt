@@ -49,7 +49,7 @@ fun Instant?.toSyncDateTimeUiText(): UiText {
                 else -> {
                     val minutesAgo = this.until(now, ChronoUnit.MINUTES)
 
-                    UiText.StringResource(R.string.minutes_ago, arrayOf(minutesAgo))
+                    UiText.StringResource(R.string.minutes_ago, arrayOf(minutesAgo.toInt()))
                 }
             }
         }

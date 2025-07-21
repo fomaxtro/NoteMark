@@ -40,7 +40,7 @@ sealed interface UiText {
     @Composable
     fun asString(): String {
         return when (this) {
-            is StringResource -> stringResource(resId)
+            is StringResource -> stringResource(resId, *args)
             is DynamicString -> value
             is PluralStringResource -> pluralStringResource(resId, count, count)
         }
@@ -48,7 +48,7 @@ sealed interface UiText {
 
     fun asString(context: Context): String {
         return when (this) {
-            is StringResource -> context.getString(resId)
+            is StringResource -> context.getString(resId, *args)
             is DynamicString -> value
             is PluralStringResource -> context.resources.getQuantityString(resId, count, count)
         }

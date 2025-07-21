@@ -86,17 +86,17 @@ class SettingsViewModel(
                 return@launch
             }
 
+            _state.update {
+                it.copy(
+                    isSyncing = true
+                )
+            }
+
             syncRepository
                 .performFullSync()
                 .collect { syncStatus ->
                     when (syncStatus) {
                         SyncStatus.SYNCING -> {
-                            _state.update {
-                                it.copy(
-                                    isSyncing = true
-                                )
-                            }
-
                             eventChannel.send(SettingsEvent.ShoSystemMessage(
                                 UiText.StringResource(R.string.syncing_data)
                             ))
@@ -115,7 +115,7 @@ class SettingsViewModel(
                         SyncStatus.FAILED -> {
                             _state.update {
                                 it.copy(
-                                    isSyncing = true
+                                    isSyncing = false
                                 )
                             }
 

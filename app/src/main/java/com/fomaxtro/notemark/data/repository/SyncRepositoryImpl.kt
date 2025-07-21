@@ -31,8 +31,6 @@ class SyncRepositoryImpl(
     private val sessionStorage: SecureSessionStorage
 ) : SyncRepository {
     override fun performFullSync(): Flow<SyncStatus> = callbackFlow {
-        trySend(SyncStatus.SYNCING)
-
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresStorageNotLow(true)
@@ -61,9 +59,10 @@ class SyncRepositoryImpl(
 
         val workInfoObserver = Observer<WorkInfo?> { workInfo ->
             when (workInfo?.state) {
+                WorkInfo.State.RUNNING -> trySend(SyncStatus.SYNCING)
+
                 WorkInfo.State.ENQUEUED,
-                WorkInfo.State.RUNNING,
-                WorkInfo.State.BLOCKED -> trySend(SyncStatus.SYNCING)
+                WorkInfo.State.BLOCKED -> Unit
 
                 WorkInfo.State.SUCCEEDED -> {
                     trySend(SyncStatus.SYNCED)
