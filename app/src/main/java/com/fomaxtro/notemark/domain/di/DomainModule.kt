@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.domain.di
 
+import com.fomaxtro.notemark.domain.use_case.CheckUnsavedNoteChanges
 import com.fomaxtro.notemark.domain.use_case.Logout
 import com.fomaxtro.notemark.domain.validator.LoginDataValidator
 import com.fomaxtro.notemark.domain.validator.RegistrationDataValidator
@@ -10,4 +11,5 @@ val domainModule = module {
     singleOf(::RegistrationDataValidator)
     singleOf(::LoginDataValidator)
     singleOf(::Logout)
+    singleOf(::CheckUnsavedNoteChanges)
 }

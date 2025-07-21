@@ -6,7 +6,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.domain.model.Note
+import com.fomaxtro.notemark.domain.model.UnsavedNote
 import com.fomaxtro.notemark.domain.repository.NoteRepository
+import com.fomaxtro.notemark.domain.use_case.CheckUnsavedNoteChanges
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +25,8 @@ import java.util.UUID
 class EditNoteViewModel(
     id: String,
     private val defaultTitle: String,
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val checkUnsavedNoteChanges: CheckUnsavedNoteChanges
 ) : ViewModel() {
     private val _state = MutableStateFlow(
         EditNoteState(
@@ -128,21 +131,24 @@ class EditNoteViewModel(
 
     private fun onDiscardClick() {
         viewModelScope.launch {
-            val title = state.value.title.text
-            val content = state.value.content.text.toString()
+            when (
+                checkUnsavedNoteChanges(
+                    defaultTitle = defaultTitle,
+                    currentTitle = state.value.title.text,
+                    currentContent = state.value.content.text.toString(),
+                    originalNote = loadedNote
+                )
+            ) {
+                UnsavedNote.DELETED,
+                UnsavedNote.KEEP_SAVED-> eventChannel.send(EditNoteEvent.NavigateBack)
 
-            if (title == defaultTitle && title == loadedNote.title && content.isEmpty()) {
-                noteRepository.delete(loadedNote.id)
-
-                eventChannel.send(EditNoteEvent.NavigateBack)
-            } else if (title != loadedNote.title || content != loadedNote.content) {
-                _state.update {
-                    it.copy(
-                        showDiscardDialog = true
-                    )
+                UnsavedNote.DISCARDED -> {
+                    _state.update {
+                        it.copy(
+                            showDiscardDialog = true
+                        )
+                    }
                 }
-            } else {
-                eventChannel.send(EditNoteEvent.NavigateBack)
             }
         }
     }

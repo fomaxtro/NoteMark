@@ -33,7 +33,8 @@ val presentationModule = module {
         EditNoteViewModel(
             id = id,
             defaultTitle = defaultTitle,
-            noteRepository = get()
+            noteRepository = get(),
+            checkUnsavedNoteChanges = get()
         )
     }
     viewModelOf(::SettingsViewModel)
