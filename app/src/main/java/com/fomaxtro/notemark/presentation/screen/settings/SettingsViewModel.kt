@@ -10,6 +10,7 @@ import com.fomaxtro.notemark.domain.repository.SyncRepository
 import com.fomaxtro.notemark.presentation.ui.UiText
 import com.fomaxtro.notemark.presentation.util.toSyncDateTimeUiText
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -92,8 +93,12 @@ class SettingsViewModel(
                 )
             }
 
-            syncRepository
-                .performFullSync()
+            val syncDeferred = applicationScope.async {
+                syncRepository.performFullSync()
+            }
+
+            syncDeferred
+                .await()
                 .collect { syncStatus ->
                     when (syncStatus) {
                         SyncStatus.SYNCING -> {
