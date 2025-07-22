@@ -1,10 +1,11 @@
 package com.fomaxtro.notemark.navigation
 
+import com.fomaxtro.notemark.presentation.screen.edit_note.mode.EditNoteMode
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
-    data class EditNote(val id: String) : Route
+    data class EditNote(val id: String, val mode: EditNoteMode) : Route
     @Serializable
     data object Landing : Route
     @Serializable

@@ -2,6 +2,7 @@ package com.fomaxtro.notemark.presentation.di
 
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.screen.edit_note.EditNoteViewModel
+import com.fomaxtro.notemark.presentation.screen.edit_note.mode.EditNoteMode
 import com.fomaxtro.notemark.presentation.screen.landing.LandingViewModel
 import com.fomaxtro.notemark.presentation.screen.login.LoginViewModel
 import com.fomaxtro.notemark.presentation.screen.note_details.NoteDetailsViewModel
@@ -27,11 +28,12 @@ val presentationModule = module {
             connectivity = get()
         )
     }
-    viewModel<EditNoteViewModel> { (id: String) ->
+    viewModel<EditNoteViewModel> { (id: String, mode: EditNoteMode) ->
         val defaultTitle = androidContext().getString(R.string.note_title)
 
         EditNoteViewModel(
             id = id,
+            mode = mode,
             defaultTitle = defaultTitle,
             noteRepository = get(),
             checkUnsavedNoteChanges = get()

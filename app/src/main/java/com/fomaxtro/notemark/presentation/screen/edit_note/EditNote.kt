@@ -12,7 +12,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -24,8 +25,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -46,18 +49,21 @@ import com.fomaxtro.notemark.presentation.designsystem.text_fields.AutoScrolledB
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.designsystem.theme.SpaceGrotesk
 import com.fomaxtro.notemark.presentation.screen.edit_note.components.PlainTextFieldDecorationBox
+import com.fomaxtro.notemark.presentation.screen.edit_note.mode.EditNoteMode
 import com.fomaxtro.notemark.presentation.ui.DeviceOrientation
 import com.fomaxtro.notemark.presentation.ui.ObserveAsEvents
 import com.fomaxtro.notemark.presentation.ui.rememberDeviceOrientation
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun EditNoteRoot(
     id: String,
+    mode: EditNoteMode,
     navigateBack: () -> Unit,
     viewModel: EditNoteViewModel = koinViewModel {
-        parametersOf(id)
+        parametersOf(id, mode)
     }
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -73,7 +79,8 @@ fun EditNoteRoot(
     EditNoteScreen(
         state = state,
         onAction = viewModel::onAction,
-        focusRequester = focusRequester
+        focusRequester = focusRequester,
+        mode = mode
     )
 }
 
@@ -82,10 +89,25 @@ fun EditNoteRoot(
 private fun EditNoteScreen(
     onAction: (EditNoteAction) -> Unit = {},
     state: EditNoteState,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    mode: EditNoteMode
 ) {
     val focusManager = LocalFocusManager.current
     val deviceOrientation = rememberDeviceOrientation()
+    val contentState = rememberTextFieldState(state.content)
+
+    LaunchedEffect(contentState) {
+        snapshotFlow { contentState.text.toString() }
+            .collectLatest {
+                onAction(EditNoteAction.OnContentChange(it))
+            }
+    }
+
+    LaunchedEffect(state.loadedNote) {
+        if (state.loadedNote != null) {
+            contentState.setTextAndPlaceCursorAtEnd(state.loadedNote.content)
+        }
+    }
 
     if (state.showDiscardDialog) {
         AlertDialog(
@@ -135,17 +157,19 @@ private fun EditNoteScreen(
                     }
                 },
                 action = {
-                    TextButton(
-                        onClick = {
-                            onAction(EditNoteAction.OnSaveNoteClick)
+                    if (mode == EditNoteMode.CREATE) {
+                        TextButton(
+                            onClick = {
+                                onAction(EditNoteAction.OnSaveNoteClick)
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.save_note),
+                                fontFamily = SpaceGrotesk,
+                                fontSize = 16.sp,
+                                lineHeight = 24.sp
+                            )
                         }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.save_note),
-                            fontFamily = SpaceGrotesk,
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp
-                        )
                     }
                 }
             )
@@ -210,7 +234,7 @@ private fun EditNoteScreen(
             )
 
             AutoScrolledBasicTextField(
-                state = state.content,
+                state = contentState,
                 textStyle = contentTextStyle,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -224,7 +248,7 @@ private fun EditNoteScreen(
                     .imePadding(),
                 decorator = { innerTextField ->
                     PlainTextFieldDecorationBox(
-                        value = state.content.text.toString(),
+                        value = contentState.text.toString(),
                         innerTextField = innerTextField,
                         placeholder = stringResource(R.string.note_content_placeholder),
                         textStyle = contentTextStyle
@@ -245,12 +269,11 @@ private fun EditNoteScreenPreview() {
         EditNoteScreen(
             state = EditNoteState(
                 title = TextFieldValue("New Note"),
-                content = TextFieldState(
-                    "The quiet hum of the morning air was broken only by the soft rustle of leaves dancing in the breeze. A cup of coffee steamed gently in hand, warmth seeping into chilled fingers. Thoughts flowed freely, unbothered by structure or form—just fragments of memory and hope stitched together. In this stillness, inspiration felt close, like a familiar friend waiting to be acknowledged and welcomed in. Pages remained blank, yet full of potential. Each pause between thoughts was its own kind of music. The world outside hadn’t changed, but the lens through which it was viewed felt freshly cleaned—clearer, softer. Clouds moved lazily across the sky, painting slow-moving stories above. A breeze swept in, carrying with it the faint scent of earth and something that reminded one of home. The clinking of a spoon against a ceramic mug, the distant bark of a dog, a laugh from a neighbor’s open window—each moment ordinary, yet profound. And somehow, all of it seemed to whisper: write, because this matters."
-                ),
+                content =  "The quiet hum of the morning air was broken only by the soft rustle of leaves dancing in the breeze. A cup of coffee steamed gently in hand, warmth seeping into chilled fingers. Thoughts flowed freely, unbothered by structure or form—just fragments of memory and hope stitched together. In this stillness, inspiration felt close, like a familiar friend waiting to be acknowledged and welcomed in. Pages remained blank, yet full of potential. Each pause between thoughts was its own kind of music. The world outside hadn’t changed, but the lens through which it was viewed felt freshly cleaned—clearer, softer. Clouds moved lazily across the sky, painting slow-moving stories above. A breeze swept in, carrying with it the faint scent of earth and something that reminded one of home. The clinking of a spoon against a ceramic mug, the distant bark of a dog, a laugh from a neighbor’s open window—each moment ordinary, yet profound. And somehow, all of it seemed to whisper: write, because this matters.",
                 showDiscardDialog = false
             ),
-            focusRequester = FocusRequester()
+            focusRequester = FocusRequester(),
+            mode = EditNoteMode.CREATE
         )
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 
 sealed interface EditNoteAction {
     data class OnTitleChange(val title: TextFieldValue) : EditNoteAction
+    data class OnContentChange(val content: String) : EditNoteAction
     data object OnDiscardClick : EditNoteAction
     data object OnDiscardDialogDismiss : EditNoteAction
     data object OnDiscardDialogConfirm : EditNoteAction

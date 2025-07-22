@@ -1,7 +1,7 @@
 package com.fomaxtro.notemark.domain.model
 
-enum class UnsavedNote {
-    DELETED,
-    DISCARDED,
+enum class UnsavedNoteAction {
+    DELETE,
+    DISCARD,
     KEEP_SAVED
 }

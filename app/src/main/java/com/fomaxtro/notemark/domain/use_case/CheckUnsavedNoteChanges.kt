@@ -1,26 +1,27 @@
 package com.fomaxtro.notemark.domain.use_case
 
 import com.fomaxtro.notemark.domain.model.Note
-import com.fomaxtro.notemark.domain.model.UnsavedNote
-import com.fomaxtro.notemark.domain.repository.NoteRepository
+import com.fomaxtro.notemark.domain.model.UnsavedNoteAction
 
-class CheckUnsavedNoteChanges(
-    private val noteRepository: NoteRepository
-) {
-    suspend operator fun invoke(
+class CheckUnsavedNoteChanges {
+    operator fun invoke(
         defaultTitle: String,
         currentTitle: String,
         currentContent: String,
         originalNote: Note
-    ): UnsavedNote {
-        if (currentTitle == defaultTitle && currentTitle == originalNote.title && currentContent.isEmpty()) {
-            noteRepository.delete(originalNote.id)
+    ): UnsavedNoteAction {
+        return when {
+            currentTitle == defaultTitle
+                    && currentTitle == originalNote.title
+                    && currentContent.isEmpty() -> {
+                UnsavedNoteAction.DELETE
+            }
 
-            return UnsavedNote.DELETED
-        } else if (currentTitle != originalNote.title || currentContent != originalNote.content) {
-            return UnsavedNote.DISCARDED
-        } else {
-            return UnsavedNote.KEEP_SAVED
+            currentTitle != originalNote.title || currentContent != originalNote.content -> {
+                UnsavedNoteAction.DISCARD
+            }
+
+            else -> UnsavedNoteAction.KEEP_SAVED
         }
     }
 }

@@ -1,10 +1,13 @@
 package com.fomaxtro.notemark.presentation.screen.edit_note
 
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.text.input.TextFieldValue
+import com.fomaxtro.notemark.domain.model.Note
 
 data class EditNoteState(
     val title: TextFieldValue = TextFieldValue(),
-    val content: TextFieldState = TextFieldState(),
-    val showDiscardDialog: Boolean = false
-)
+    val content: String = "",
+    val showDiscardDialog: Boolean = false,
+    val loadedNote: Note? = null,
+) {
+    fun requireLoadedNote(): Note = requireNotNull(loadedNote)
+}

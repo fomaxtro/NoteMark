@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.presentation.screen.edit_note.EditNoteRoot
+import com.fomaxtro.notemark.presentation.screen.edit_note.mode.EditNoteMode
 import com.fomaxtro.notemark.presentation.screen.landing.LandingRoot
 import com.fomaxtro.notemark.presentation.screen.login.LoginRoot
 import com.fomaxtro.notemark.presentation.screen.note_details.NoteDetailsRoot
@@ -113,7 +114,7 @@ fun NavigationRoot(
         composable<Route.NoteList> {
             NoteListRoot(
                 navigateToEditNote = { id ->
-                    navController.navigate(Route.EditNote(id)) {
+                    navController.navigate(Route.EditNote(id, EditNoteMode.CREATE)) {
                         launchSingleTop = true
                     }
                 },
@@ -135,6 +136,7 @@ fun NavigationRoot(
 
             EditNoteRoot(
                 id = arguments.id,
+                mode = arguments.mode,
                 navigateBack = {
                     navController.navigateUp()
                 }
@@ -158,7 +160,7 @@ fun NavigationRoot(
                     navController.navigateUp()
                 },
                 navigateToEditNote = { id ->
-                    navController.navigate(Route.EditNote(id)) {
+                    navController.navigate(Route.EditNote(id, EditNoteMode.EDIT)) {
                         launchSingleTop = true
                     }
                 }
