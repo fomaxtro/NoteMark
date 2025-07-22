@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -47,10 +48,12 @@ fun AutoScrolledBasicTextField(
     var textLayoutResult by remember {
         mutableStateOf<TextLayoutResult?>(null)
     }
-    val isImeVisible = WindowInsets.isImeVisible
+    val imeHeight = WindowInsets
+        .ime
+        .getBottom(LocalDensity.current)
 
-    LaunchedEffect(isImeVisible) {
-        if (isImeVisible && textLayoutResult != null) {
+    LaunchedEffect(imeHeight) {
+        if (imeHeight > 0 && textLayoutResult != null) {
             val cursorRect = textLayoutResult?.getCursorRect(state.selection.end)
                 ?: return@LaunchedEffect
 
@@ -60,7 +63,14 @@ fun AutoScrolledBasicTextField(
             val scrollableArea = texLayoutHeight - innerTextFieldHeight
             val scrollDelta = cursorPosition - innerTextFieldHeight
 
-            if (scrollDelta.roundToInt() > 0) {
+            val currentPercentageScrollDelta = if (scrollState.maxValue > 0) {
+                scrollState.value.toFloat() / scrollState.maxValue.toFloat()
+            } else 0f
+
+            val currentScrollDelta = currentPercentageScrollDelta * scrollableArea
+            val currentScrollPosition = innerTextFieldHeight + currentScrollDelta
+
+            if (currentScrollPosition < cursorPosition && scrollDelta.roundToInt() > 0) {
                 val percentageScrollDelta = scrollDelta / scrollableArea
                 val targetScroll = scrollState.maxValue * percentageScrollDelta
 
@@ -91,7 +101,8 @@ fun AutoScrolledBasicTextField(
         cursorBrush = SolidColor(
             MaterialTheme.colorScheme.primary
         ),
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        scrollState = scrollState
     )
 }
 
