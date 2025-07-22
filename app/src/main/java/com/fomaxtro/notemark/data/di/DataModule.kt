@@ -9,6 +9,7 @@ import com.fomaxtro.notemark.data.database.NoteMarkDatabase
 import com.fomaxtro.notemark.data.database.dao.NoteDao
 import com.fomaxtro.notemark.data.database.dao.SyncDao
 import com.fomaxtro.notemark.data.database.dao.SyncInfoDao
+import com.fomaxtro.notemark.data.database.dao.UserPreferencesDao
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.datastore.store.EncryptedPreferenceSerializer
 import com.fomaxtro.notemark.data.datastore.store.SecurePreference
@@ -19,6 +20,7 @@ import com.fomaxtro.notemark.data.remote.datasource.UserRemoteDataSource
 import com.fomaxtro.notemark.data.repository.AuthRepositoryImpl
 import com.fomaxtro.notemark.data.repository.NoteRepositoryImpl
 import com.fomaxtro.notemark.data.repository.SyncRepositoryImpl
+import com.fomaxtro.notemark.data.repository.UserPreferencesRepositoryImpl
 import com.fomaxtro.notemark.data.repository.UserRepositoryImpl
 import com.fomaxtro.notemark.data.sync.SyncController
 import com.fomaxtro.notemark.data.sync.SyncWorker
@@ -27,6 +29,7 @@ import com.fomaxtro.notemark.domain.conectivity.Connectivity
 import com.fomaxtro.notemark.domain.repository.AuthRepository
 import com.fomaxtro.notemark.domain.repository.NoteRepository
 import com.fomaxtro.notemark.domain.repository.SyncRepository
+import com.fomaxtro.notemark.domain.repository.UserPreferencesRepository
 import com.fomaxtro.notemark.domain.repository.UserRepository
 import com.fomaxtro.notemark.domain.validator.PatternMatching
 import io.ktor.client.HttpClient
@@ -59,6 +62,7 @@ val dataModule = module {
     singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
     singleOf(::UserRepositoryImpl).bind<UserRepository>()
     singleOf(::SyncRepositoryImpl).bind<SyncRepository>()
+    singleOf(::UserPreferencesRepositoryImpl).bind<UserPreferencesRepository>()
 
     single<DataStore<SecurePreference>> {
         DataStoreFactory.create(
@@ -80,6 +84,7 @@ val dataModule = module {
     single<NoteDao> { get<NoteMarkDatabase>().noteDao() }
     single<SyncDao> { get<NoteMarkDatabase>().syncDao() }
     single<SyncInfoDao> { get<NoteMarkDatabase>().syncInfoDao() }
+    single<UserPreferencesDao> { get<NoteMarkDatabase>().userPreferencesDao() }
 
     singleOf(::AndroidConnectivity).bind<Connectivity>()
 

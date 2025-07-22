@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "5adc5ac0e852ade5ec1fd5470bf31019",
+    "identityHash": "2a9e803eb87cc3bc60f6c8b6cda36b26",
     "entities": [
       {
         "tableName": "notes",
@@ -135,11 +135,35 @@
             "user_id"
           ]
         }
+      },
+      {
+        "tableName": "user_preferences",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `sync_interval` INTEGER NOT NULL, PRIMARY KEY(`user_id`))",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncInterval",
+            "columnName": "sync_interval",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5adc5ac0e852ade5ec1fd5470bf31019')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2a9e803eb87cc3bc60f6c8b6cda36b26')"
     ]
   }
 }
