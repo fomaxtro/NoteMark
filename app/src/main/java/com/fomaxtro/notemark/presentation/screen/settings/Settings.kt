@@ -148,12 +148,10 @@ private fun SettingsScreen(
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    val syncIntervalEnabled = state.hasInternetConnection && !state.isSyncing
-
                     SettingListItem(
                         icon = Icons.Default.AccessTime,
                         title = stringResource(R.string.sync_interval),
-                        enabled = syncIntervalEnabled,
+                        enabled = !state.isSyncing,
                         action = {
                             SettingActionButton(
                                 text = when (state.syncInterval) {
@@ -173,7 +171,7 @@ private fun SettingsScreen(
                                 onClick = {
                                     isExpanded = true
                                 },
-                                enabled = syncIntervalEnabled
+                                enabled = !state.isSyncing
                             )
 
                             DropdownMenu(
