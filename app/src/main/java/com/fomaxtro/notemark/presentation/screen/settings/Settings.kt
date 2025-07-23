@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fomaxtro.notemark.R
+import com.fomaxtro.notemark.domain.model.SyncInterval
 import com.fomaxtro.notemark.presentation.designsystem.app_bars.NoteMarkTopAppBar
 import com.fomaxtro.notemark.presentation.designsystem.theme.NoteMarkTheme
 import com.fomaxtro.notemark.presentation.screen.settings.components.SettingActionButton
@@ -147,18 +148,32 @@ private fun SettingsScreen(
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    val syncIntervalEnabled = state.hasInternetConnection && !state.isSyncing
+
                     SettingListItem(
                         icon = Icons.Default.AccessTime,
                         title = stringResource(R.string.sync_interval),
-                        onClick = {},
-                        enabled = !state.isSyncing,
+                        enabled = syncIntervalEnabled,
                         action = {
                             SettingActionButton(
-                                text = stringResource(R.string.manual_only),
+                                text = when (state.syncInterval) {
+                                    SyncInterval.MANUAL_ONLY -> {
+                                        stringResource(R.string.manual_only)
+                                    }
+                                    SyncInterval.FIFTEEN_MINUTES -> {
+                                        stringResource(R.string.fifteen_minutes)
+                                    }
+                                    SyncInterval.THIRTY_MINUTES -> {
+                                        stringResource(R.string.thirty_minutes)
+                                    }
+                                    SyncInterval.ONE_HOUR -> {
+                                        stringResource(R.string.one_hour)
+                                    }
+                                },
                                 onClick = {
                                     isExpanded = true
                                 },
-                                enabled = !state.isSyncing
+                                enabled = syncIntervalEnabled
                             )
 
                             DropdownMenu(
@@ -179,32 +194,48 @@ private fun SettingsScreen(
                                     text = stringResource(R.string.manual_only),
                                     onClick = {
                                         isExpanded = false
+
+                                        onAction(SettingsAction.OnSyncIntervalChange(
+                                            SyncInterval.MANUAL_ONLY
+                                        ))
                                     },
-                                    isSelected = true
+                                    isSelected = state.syncInterval == SyncInterval.MANUAL_ONLY
                                 )
 
                                 SettingDropdownMenuItem(
                                     text = stringResource(R.string.fifteen_minutes),
                                     onClick = {
                                         isExpanded = false
+
+                                        onAction(SettingsAction.OnSyncIntervalChange(
+                                            SyncInterval.FIFTEEN_MINUTES
+                                        ))
                                     },
-                                    isSelected = false
+                                    isSelected = state.syncInterval == SyncInterval.FIFTEEN_MINUTES
                                 )
 
                                 SettingDropdownMenuItem(
                                     text = stringResource(R.string.thirty_minutes),
                                     onClick = {
                                         isExpanded = false
+
+                                        onAction(SettingsAction.OnSyncIntervalChange(
+                                            SyncInterval.THIRTY_MINUTES
+                                        ))
                                     },
-                                    isSelected = false
+                                    isSelected = state.syncInterval == SyncInterval.THIRTY_MINUTES
                                 )
 
                                 SettingDropdownMenuItem(
                                     text = stringResource(R.string.one_hour),
                                     onClick = {
                                         isExpanded = false
+
+                                        onAction(SettingsAction.OnSyncIntervalChange(
+                                            SyncInterval.ONE_HOUR
+                                        ))
                                     },
-                                    isSelected = false
+                                    isSelected = state.syncInterval == SyncInterval.ONE_HOUR
                                 )
                             }
                         }

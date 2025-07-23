@@ -3,16 +3,19 @@ package com.fomaxtro.notemark.data.repository
 import android.content.Context
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.await
 import com.fomaxtro.notemark.data.database.dao.SyncInfoDao
 import com.fomaxtro.notemark.data.datastore.SecureSessionStorage
 import com.fomaxtro.notemark.data.sync.SyncWorker
+import com.fomaxtro.notemark.domain.model.SyncInterval
 import com.fomaxtro.notemark.domain.model.SyncStatus
 import com.fomaxtro.notemark.domain.repository.SyncRepository
 import kotlinx.coroutines.flow.Flow
@@ -25,10 +28,17 @@ import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 class SyncRepositoryImpl(
-    private val context: Context,
+    context: Context,
     private val syncInfoDao: SyncInfoDao,
     private val sessionStorage: SecureSessionStorage
 ) : SyncRepository {
+    private companion object {
+        const val MANUAL_SYNC_WORK_NAME = "manual_sync_work"
+        const val PERIODIC_SYNC_WORK_NAME = "periodic_sync_work"
+    }
+
+    private val workManager = WorkManager.getInstance(context)
+
     override fun performFullSync(): Flow<SyncStatus> = flow {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -45,10 +55,8 @@ class SyncRepositoryImpl(
             )
             .build()
 
-        val workManager = WorkManager.getInstance(context)
-
         workManager.enqueueUniqueWork(
-            "sync",
+            MANUAL_SYNC_WORK_NAME,
             ExistingWorkPolicy.REPLACE,
             syncWorkRequest
         ).await()
@@ -88,5 +96,45 @@ class SyncRepositoryImpl(
                     }
                 }
         )
+    }
+
+    override fun schedulePeriodicSync(interval: SyncInterval) {
+        if (interval == SyncInterval.MANUAL_ONLY) {
+            cancelPeriodicSync()
+
+            return
+        }
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresStorageNotLow(true)
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val syncWorkRequest = PeriodicWorkRequestBuilder<SyncWorker>(
+            interval.interval.toLong(),
+            TimeUnit.MINUTES
+        )
+            .setConstraints(constraints)
+            .setBackoffCriteria(
+                BackoffPolicy.EXPONENTIAL,
+                30,
+                TimeUnit.SECONDS
+            )
+            .setInitialDelay(
+                interval.interval.toLong(),
+                TimeUnit.MINUTES
+            )
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            PERIODIC_SYNC_WORK_NAME,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            syncWorkRequest
+        )
+    }
+
+    override fun cancelPeriodicSync() {
+        workManager.cancelUniqueWork(PERIODIC_SYNC_WORK_NAME)
     }
 }

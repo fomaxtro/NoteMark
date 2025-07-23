@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fomaxtro.notemark.R
 import com.fomaxtro.notemark.domain.conectivity.Connectivity
+import com.fomaxtro.notemark.domain.model.SyncInterval
 import com.fomaxtro.notemark.domain.model.SyncStatus
+import com.fomaxtro.notemark.domain.model.UserPreferences
 import com.fomaxtro.notemark.domain.repository.SyncRepository
+import com.fomaxtro.notemark.domain.repository.UserPreferencesRepository
 import com.fomaxtro.notemark.domain.use_case.Logout
 import com.fomaxtro.notemark.presentation.ui.UiText
 import com.fomaxtro.notemark.presentation.util.toSyncDateTimeUiText
@@ -26,13 +29,15 @@ class SettingsViewModel(
     private val applicationScope: CoroutineScope,
     private val syncRepository: SyncRepository,
     private val connectivity: Connectivity,
-    private val logout: Logout
+    private val logout: Logout,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
     val state = _state
         .onStart {
             observeInternetConnection()
-            loadLastSyncStatus()
+            loadUserPreferences()
+            observeLastSyncTime()
         }
         .stateIn(
             viewModelScope,
@@ -56,7 +61,17 @@ class SettingsViewModel(
             .launchIn(viewModelScope)
     }
 
-    private fun loadLastSyncStatus() {
+    private suspend fun loadUserPreferences() {
+        val userPreferences = userPreferencesRepository.find()
+
+        _state.update {
+            it.copy(
+                syncInterval = userPreferences.syncInterval
+            )
+        }
+    }
+
+    private fun observeLastSyncTime() {
         syncRepository
             .getLastSyncTime()
             .onEach { lastSyncTime ->
@@ -74,6 +89,22 @@ class SettingsViewModel(
             SettingsAction.OnLogoutClick -> onLogoutClick()
             SettingsAction.OnNavigateBackClick -> onNavigateBackClick()
             SettingsAction.OnSyncDataClick -> onSyncDataClick()
+            is SettingsAction.OnSyncIntervalChange -> onSyncIntervalChange(action.interval)
+        }
+    }
+
+    private fun onSyncIntervalChange(interval: SyncInterval) {
+        _state.update { it.copy(
+            syncInterval = interval
+        ) }
+
+        viewModelScope.launch {
+            syncRepository.schedulePeriodicSync(interval)
+            userPreferencesRepository.save(
+                UserPreferences(
+                    syncInterval = interval
+                )
+            )
         }
     }
 

@@ -32,7 +32,7 @@ fun SettingListItem(
     icon: ImageVector,
     modifier: Modifier = Modifier,
     title: String,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     action: @Composable () -> Unit = {},
     subtitle: String? = null,
     color: Color = LocalContentColor.current,
@@ -40,9 +40,13 @@ fun SettingListItem(
 ) {
     Row(
         modifier = modifier
-            .clickable(
-                onClick = onClick,
-                enabled = enabled
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(
+                        onClick = onClick,
+                        enabled = enabled
+                    )
+                } else Modifier
             )
             .padding(
                 vertical = 16.dp
