@@ -30,6 +30,21 @@ A modern mobile note-taking application developed for Mobile Dev Campus that all
 
 *Organized view of all your notes with timestamps*
 
+### Note Detail View
+<img src="screenshots/4.png" alt="Note Detail View" width="300"/>
+
+*View individual notes with creation and edit timestamps*
+
+### Reader Mode
+<img src="screenshots/5.png" alt="Reader Mode" width="400"/>
+
+*Responsive design that works in both portrait and landscape orientations*
+
+### Edit Mode
+<img src="screenshots/6.png" alt="Edit Mode" width="300"/>
+
+*Simple editing interface with easy navigation*
+
 </div>
 
 ## Configuration
