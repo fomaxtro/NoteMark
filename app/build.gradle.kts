@@ -100,6 +100,8 @@ dependencies {
     testRuntimeOnly(libs.junit.jupiter.engine)
 
     testImplementation(libs.assertk)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
