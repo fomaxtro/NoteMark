@@ -1,6 +1,5 @@
 package com.fomaxtro.notemark.data.conectivity
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -10,9 +9,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class AndroidConnectivity(context: Context) : Connectivity {
-    private val connectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-
+class AndroidConnectivity(
+    private val connectivityManager: ConnectivityManager
+) : Connectivity {
     override fun hasInternetConnection(): Flow<Boolean> = callbackFlow {
         val currentNetwork = connectivityManager.activeNetwork
         val networkCapabilities = connectivityManager.getNetworkCapabilities(currentNetwork)
@@ -32,14 +31,10 @@ class AndroidConnectivity(context: Context) : Connectivity {
                 network: Network,
                 networkCapabilities: NetworkCapabilities
             ) {
-                super.onCapabilitiesChanged(network, networkCapabilities)
-
                 trySend(hasInternetConnection(networkCapabilities))
             }
 
             override fun onLost(network: Network) {
-                super.onLost(network)
-
                 trySend(false)
             }
         }

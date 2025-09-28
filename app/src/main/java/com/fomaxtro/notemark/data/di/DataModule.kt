@@ -1,5 +1,6 @@
 package com.fomaxtro.notemark.data.di
 
+import android.net.ConnectivityManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
@@ -86,7 +87,12 @@ val dataModule = module {
     single<SyncInfoDao> { get<NoteMarkDatabase>().syncInfoDao() }
     single<UserPreferencesDao> { get<NoteMarkDatabase>().userPreferencesDao() }
 
-    singleOf(::AndroidConnectivity).bind<Connectivity>()
+    single<AndroidConnectivity> {
+        AndroidConnectivity(
+            connectivityManager = androidContext()
+                .getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        )
+    }.bind<Connectivity>()
 
     singleOf(::SyncController)
 

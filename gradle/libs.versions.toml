@@ -23,6 +23,7 @@ junit5Plugin = "1.13.4.0"
 assertk = "0.28.1"
 mockk = "1.14.5"
 coroutines = "1.10.2"
+turbine = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,8 +75,12 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
 
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 
 [bundles]
 koin = [
@@ -95,6 +100,11 @@ ktor = [
 room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
+]
+mockk = [
+    "mockk",
+    "mockk-android",
+    "mockk-agent"
 ]
 
 [plugins]
